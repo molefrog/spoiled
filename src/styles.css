@@ -1,0 +1,46 @@
+body {
+  font-family: sans-serif;
+}
+
+main {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 21px;
+  line-height: 1.5;
+}
+
+blockquote {
+  margin: 0;
+  padding: 0 1em;
+  color: #ba737d;
+  border-left: 0.25em solid #dfe2e5;
+  background: #011627;
+  font-size: 18px;
+  padding: 24px;
+}
+
+section {
+  color: #151515;
+  max-width: 640px;
+  margin: 100px auto;
+  font-size: 21px;
+  line-height: 30px;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: 250px 250px;
+}
+
+.inline-tag {
+  display: inline-block;
+  background: blue;
+  color: white;
+  padding: 0px 10px;
+  line-height: 18px;
+  border-radius: 16px;
+  vertical-align: top;
+}
+
+section > canvas {
+  display: block;
+}
