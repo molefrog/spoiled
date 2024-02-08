@@ -23,7 +23,7 @@ interface SpoilerOptions {
 
 const DEFAULT_FPS = 24;
 
-const TILE_LIMIT = 149; // prime
+const TILE_LIMIT = 293; // prime
 
 // Check if the user has requested reduced motion
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

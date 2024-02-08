@@ -15,16 +15,18 @@ const pol2vec = (l, a = 0) => [l * Math.cos(a), l * Math.sin(a)];
 const vecmag = ([x, y]) => Math.sqrt(x * x + y * y);
 const vecnorm = ([x, y], l = vecmag([x, y])) => (l === 0 ? [0, 0] : [x / l, y / l]);
 
-// TODO!
-function trapezoidalWave(t, l, n) {
-  if (t < 0.2) {
-    return t / 0.2;
-  } else if (t > n - l) {
-    return (n - t) / l;
-  } else {
+//      ..____.
+// ____/       \___
+// -1..0.a...b..l...
+const trapezoidalWave = (l, a, b) => {
+  const s = Math.max(a, l - b);
+
+  return (t) => {
+    if (t < a) return Math.max(0, t / a);
+    if (t > s) return Math.max(0, 1 - (t - s) / (l - s));
     return 1;
-  }
-}
+  };
+};
 
 const _cycle = (x, n) => ((x % n) + n) % n;
 const _mirror = (x, n, r) => (x < r ? n + x : x > n - r ? x - n : x);
@@ -124,6 +126,9 @@ class SpoilerPainter {
       const lifetime = rand(0.3, 1.5); // in sec
       const respawn = rand(0, 1); // how long until the next respawn
 
+      // make particle appear in 0.2s and disappear in 0.5s
+      const visibilityFn = trapezoidalWave(lifetime, 0.2, 0.5);
+
       // ensures that particles don't all spawn at the same time
       const phase = rand(0, lifetime + respawn);
       let t = Math.min(lifetime, (worldt + phase) % (lifetime + respawn));
@@ -136,9 +141,8 @@ class SpoilerPainter {
       const x = x0 + vx * t;
       const y = y0 + vy * t;
 
-      const visibility = trapezoidalWave(t, 0.5, lifetime);
-      const alpha = 1 - t / lifetime;
-      const size = size0 * visibility;
+      const alpha = 1 - t / lifetime; // ??
+      const size = size0 * visibilityFn(t);
 
       for (const [wx, wy] of cycleBounds([x, y], [width, height], size / 2)) {
         ctx.beginPath();
