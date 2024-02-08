@@ -1,29 +1,29 @@
 const _IS_WORKLET = typeof registerPaint !== "undefined";
+const M = Math;
 
 const lcgrand =
   (seed = 1) =>
   (a = 0, b = 1) =>
     a +
-    (Math.abs(b - a) *
-      (Math.imul(48271, (seed = Math.imul(214013, seed) + 2531011)) & 0x7fffffff)) /
+    (M.abs(b - a) * (M.imul(48271, (seed = M.imul(214013, seed) + 2531011)) & 0x7fffffff)) /
       0x7fffffff;
 
 const lerp = (a, b, t) => a + (b - a) * t;
 
 // vector utils
-const pol2vec = (l, a = 0) => [l * Math.cos(a), l * Math.sin(a)];
-const vecmag = ([x, y]) => Math.sqrt(x * x + y * y);
+const pol2vec = (l, a = 0) => [l * M.cos(a), l * M.sin(a)];
+const vecmag = ([x, y]) => M.sqrt(x * x + y * y);
 const vecnorm = ([x, y], l = vecmag([x, y])) => (l === 0 ? [0, 0] : [x / l, y / l]);
 
 //      ..____.
 // ____/       \___
 // -1..0.a...b..l...
 const trapezoidalWave = (l, a, b) => {
-  const s = Math.max(a, l - b);
+  const s = M.max(a, l - b);
 
   return (t) => {
-    if (t < a) return Math.max(0, t / a);
-    if (t > s) return Math.max(0, 1 - (t - s) / (l - s));
+    if (t < a) return M.max(0, t / a);
+    if (t > s) return M.max(0, 1 - (t - s) / (l - s));
     return 1;
   };
 };
@@ -47,7 +47,7 @@ const wordDist = (pos, gap, em) => {
     i = 0;
   chunks = [];
   do {
-    chunks.push([marker, (marker = Math.min(1, marker + words[i++ % words.length] * em))]);
+    chunks.push([marker, (marker = M.min(1, marker + words[i++ % words.length] * em))]);
     marker += gap;
   } while (marker < 1);
   chunks[chunks.length - 1][1] = 1;
@@ -74,11 +74,11 @@ class SpoilerPainter {
    defined for the element, return them in the specified array
   */
   static get inputProperties() {
-    return ["--t", "--gap", "--accent"];
+    return ["--t", "--gap", "--accent", "--mimic-words"];
   }
 
   paint(ctx, size, props) {
-    const rand = lcgrand(19234); // predictable random
+    const rand = lcgrand(4011505); // predictable random
 
     // global world time in seconds (always increasing)
     const worldt = parseFloat(getCSSVar(props, "--t")) || 0,
@@ -88,6 +88,7 @@ class SpoilerPainter {
       dprx = _IS_WORKLET ? 1.0 : devicePixelRatio,
       // hsl format
       accent = (getCSSVar(props, "--accent") || "0 0% 70%").split(" "),
+      mimicWords = getCSSVar(props, "--mimic-words") === "true",
       frict = 0,
       vmin = 2,
       vmax = 12,
@@ -98,7 +99,7 @@ class SpoilerPainter {
       // assuming density is constant, total number of particles depends
       // on the sq area, but limit it so it doesn't hurt performance
       density = 8,
-      n = Math.min(4000, ((width - 2 * hgap) * (height - 2 * vgap)) / density),
+      n = M.min(5000, ((width - 2 * hgap) * (height - 2 * vgap)) / density),
       // size deviation, disabled for low DPR devices, so we don't end up with
       // particles that have initial size of 0 px
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
@@ -114,9 +115,9 @@ class SpoilerPainter {
         size0 = rand(1.0, 1.0 + sizedev);
 
       const _l = parseInt(accent[2]);
-      const lightness = Math.floor(lerp(_l * 0.5, _l, rand()));
+      const lightness = M.floor(lerp(_l * 0.5, _l, rand()));
 
-      const v0 = pol2vec(v0mag, rand(0, Math.PI * 2));
+      const v0 = pol2vec(v0mag, rand(0, M.PI * 2));
       const [vx0norm, vy0norm] = vecnorm(v0);
       const [vx0, vy0] = v0;
 
@@ -126,12 +127,12 @@ class SpoilerPainter {
       const lifetime = rand(0.3, 1.5); // in sec
       const respawn = rand(0, 1); // how long until the next respawn
 
-      // make particle appear in 0.2s and disappear in 0.5s
-      const visibilityFn = trapezoidalWave(lifetime, 0.2, 0.5);
+      // make particle appear in 0.2s and disappear in 0.3s
+      const visibilityFn = trapezoidalWave(lifetime, 0.2, 0.3);
 
       // ensures that particles don't all spawn at the same time
       const phase = rand(0, lifetime + respawn);
-      let t = Math.min(lifetime, (worldt + phase) % (lifetime + respawn));
+      let t = M.min(lifetime, (worldt + phase) % (lifetime + respawn));
 
       if (t >= lifetime) continue;
 
@@ -141,21 +142,19 @@ class SpoilerPainter {
       const x = x0 + vx * t;
       const y = y0 + vy * t;
 
-      const alpha = 1 - t / lifetime; // ??
+      const alpha = 1 - t / lifetime;
       const size = size0 * visibilityFn(t);
 
       for (const [wx, wy] of cycleBounds([x, y], [width, height], size / 2)) {
         ctx.beginPath();
 
-        ctx.fillStyle = `hsl(${accent[0]} ${accent[1]} ${lightness}% / ${Math.round(
-          alpha * 100
-        )}%)`;
+        ctx.fillStyle = `hsl(${accent[0]} ${accent[1]} ${lightness}% / ${M.round(alpha * 100)}%)`;
 
         // Two types of shapes ■ and ●
         if (shape === "square") {
           ctx.rect(dprx * wx, dprx * wy, dprx * size, dprx * size);
         } else {
-          ctx.arc(dprx * wx, dprx * wy, (dprx * size) / 2, 0, Math.PI * 2);
+          ctx.arc(dprx * wx, dprx * wy, (dprx * size) / 2, 0, M.PI * 2);
         }
 
         ctx.closePath();
