@@ -7,6 +7,14 @@ main {
   margin: 0 auto;
   font-size: 21px;
   line-height: 1.5;
+  padding-bottom: 120px;
+}
+
+main > img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 blockquote {
