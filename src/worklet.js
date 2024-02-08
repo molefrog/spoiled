@@ -95,8 +95,8 @@ class SpoilerPainter {
       [vgap, hgap] = (getCSSVar(props, "--gap") || "0px 0px").split(" ").map(parseFloat),
       // assuming density is constant, total number of particles depends
       // on the sq area, but limit it so it doesn't hurt performance
-      density = 6,
-      n = Math.min(4000, (width * height) / density),
+      density = 8,
+      n = Math.min(4000, ((width - 2 * hgap) * (height - 2 * vgap)) / density),
       // size deviation, disabled for low DPR devices, so we don't end up with
       // particles that have initial size of 0 px
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;

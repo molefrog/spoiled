@@ -16,11 +16,14 @@ CSS.paintWorklet.addModule(
 
 interface SpoilerOptions {
   readonly fps?: number;
+  readonly gap?: number;
   readonly mimicWords?: boolean;
   // readonly accentColor?: string;
 }
 
 const DEFAULT_FPS = 24;
+
+const TILE_LIMIT = 149; // prime
 
 // Check if the user has requested reduced motion
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -44,18 +47,56 @@ class Spoiler {
    * `gap` - in px a gap that particles won't spawn within (ignored for elements that exceed
    *         the size limit)
    */
-  update({ fps = DEFAULT_FPS }: SpoilerOptions = {}) {
+  update({ fps = DEFAULT_FPS, gap = 16, mimicWords = true }: SpoilerOptions = {}) {
+    // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
 
     const isInline = getComputedStyle(this.el).getPropertyValue("display") === "inline";
+    this.useBackgroundStyle("auto", "auto");
+
+    /* block elements */
+    if (!isInline) {
+      // this feature can't be used with block elements!
+      mimicWords = false;
+
+      const rect = this.el.getBoundingClientRect();
+
+      if (rect.width * rect.height > TILE_LIMIT * TILE_LIMIT) {
+        this.useBackgroundStyle(
+          Math.min(rect.width, TILE_LIMIT),
+          Math.min(rect.height, TILE_LIMIT),
+          { repeat: true }
+        );
+
+        /* no tiling and has enough space for a gap */
+      } else if (rect.width >= 3 * gap && rect.height >= 4 * gap) {
+        this.el.style.setProperty("--gap", `${gap}px ${gap}px`);
+      }
+    }
 
     if (isInline) {
-      const lineheights = [...this.el.getClientRects()].map((r) => r.height);
-      const maxh = Math.max(...lineheights); // the height of the tallest line
-      const w = Math.min(400, maxh * 2); // max width of 400px
+      const rects = [...this.el.getClientRects()];
+      const heightOfLine = Math.min(...rects.map((r) => r.height));
 
-      this.el.getClientRects();
+      // TODO!
+      const INLINE_TILE_LIMIT = 333;
+      this.useBackgroundStyle(INLINE_TILE_LIMIT, heightOfLine, { repeat: true });
+
+      // use top/bottom gaps only
+      const vgap = Math.min(heightOfLine / 5 /* magic number */, gap);
+      this.el.style.setProperty("--gap", `0 ${vgap}px`);
     }
+
+    this.el.style.setProperty("--mimic-words", String(mimicWords));
+  }
+
+  useBackgroundStyle(ws: string | number, hs: string | number, options?: { repeat: boolean }) {
+    ws = typeof ws === "number" ? `${ws}px` : ws;
+    hs = typeof hs === "number" ? `${hs}px` : hs;
+
+    this.el.style.background = `paint(spoiler) ${
+      options?.repeat ? "repeat" : ""
+    } center center / ${ws} ${hs}`;
   }
 
   revealed() {
