@@ -1,7 +1,5 @@
-import "./styles.css";
-
 import workletSource from "./worklet.js?raw";
-import styles from "./spoiler.module.css";
+import scopedStyles from "./spoiler.module.css";
 
 declare global {
   namespace CSS {
@@ -30,10 +28,10 @@ class Spoiler {
 
   constructor(el: HTMLElement, options: SpoilerOptions = {}) {
     this.el = el;
-    this.el.classList.add(styles.spoiler);
+    this.el.classList.add(scopedStyles.spoiler);
 
     this.applyOptions(options);
-    this.#frame(performance.now());
+    this.startAnimation();
   }
 
   applyOptions({ fps = DEFAULT_FPS }: SpoilerOptions = {}) {
@@ -43,7 +41,8 @@ class Spoiler {
 
     if (isInline) {
       const lineheights = [...this.el.getClientRects()].map((r) => r.height);
-      const maxh = Math.max(...lineheights);
+      const maxh = Math.max(...lineheights); // the height of the tallest line
+      const w = Math.min(400, maxh * 2); // max width of 400px
 
       this.el.getClientRects();
     }
@@ -67,28 +66,36 @@ class Spoiler {
 
   // animation loop
   #frame = (now: DOMHighResTimeStamp) => {
-    requestAnimationFrame(this.#frame);
+    this.#raf = requestAnimationFrame(this.#frame);
 
     const dt = now - this.#t0;
-    if (dt < 1000 / this.maxFPS) return; // skip frames to limit fps
+
+    // don't skip the first frame (dt = 0)
+    if (dt > 0 && dt < 1000 / this.maxFPS) return; // skip frames to limit fps
 
     this.t += dt / 1000; // in seconds
     this.#t0 = now;
   };
-}
 
-for (const el of document.querySelectorAll("spoiler")) {
-  if (el instanceof HTMLElement) {
-    new Spoiler(el, { fps: 24 });
+  /** Animation state */
+
+  #raf: ReturnType<typeof requestAnimationFrame> | null = null;
+
+  startAnimation() {
+    this.#t0 = performance.now();
+    this.#frame(this.#t0);
+  }
+
+  stopAnimation() {
+    if (this.#raf) {
+      cancelAnimationFrame(this.#raf);
+      this.#raf = null;
+    }
+  }
+
+  get isAnimating() {
+    return this.#raf !== null;
   }
 }
 
-//     const painter = new SpoilerPainter();
-//     const ctx = el.getContext("2d");
-//     const props = new Map([
-//       ["--t", t],
-//       ["--dpr", devicePixelRatio],
-//     ]);
-
-//     painter.paint(ctx, { width: ctx.canvas.width, height: ctx.canvas.height }, props);
-//   }
+export { Spoiler };
