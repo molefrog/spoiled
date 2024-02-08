@@ -22,6 +22,9 @@ interface SpoilerOptions {
 
 const DEFAULT_FPS = 24;
 
+// Check if the user has requested reduced motion
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 class Spoiler {
   readonly el: HTMLElement;
   maxFPS: number = DEFAULT_FPS;
@@ -30,12 +33,19 @@ class Spoiler {
     this.el = el;
     this.el.classList.add(scopedStyles.spoiler);
 
-    this.applyOptions(options);
+    this.update(options);
     this.hide();
   }
 
-  applyOptions({ fps = DEFAULT_FPS }: SpoilerOptions = {}) {
-    this.maxFPS = fps;
+  /**
+   * `fps` - the maximum frames per second
+   * `mimicWords` - if true, the spoiler will try to mimic the shape of words (cssvar)
+   * `density` - overrides the density of the noise (cssvar)
+   * `gap` - in px a gap that particles won't spawn within (ignored for elements that exceed
+   *         the size limit)
+   */
+  update({ fps = DEFAULT_FPS }: SpoilerOptions = {}) {
+    this.maxFPS = prefersReducedMotion ? 0 : fps;
 
     const isInline = getComputedStyle(this.el).getPropertyValue("display") === "inline";
 
@@ -45,10 +55,6 @@ class Spoiler {
       const w = Math.min(400, maxh * 2); // max width of 400px
 
       this.el.getClientRects();
-    }
-
-    if (!isInline) {
-      this.el.style.setProperty("--max-fps", this.maxFPS.toString());
     }
   }
 
@@ -80,7 +86,9 @@ class Spoiler {
 
   // animation loop
   #frame = (now: DOMHighResTimeStamp) => {
-    this.#raf = requestAnimationFrame(this.#frame);
+    if (this.maxFPS > 0) {
+      this.#raf = requestAnimationFrame(this.#frame);
+    }
 
     const dt = now - this.#t0;
 
