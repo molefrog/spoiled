@@ -6,5 +6,12 @@ for (const el of document.querySelectorAll("spoiler, .spoiler")) {
     const accent = el.classList.contains("dark-theme") ? "rgb(200, 200, 200)" : undefined;
 
     const spoiler = new Spoiler(el, { fps: 24 /*, accentColor: accent */ });
+    el.addEventListener("click", () => {
+      if (spoiler.revealed()) {
+        spoiler.hide();
+      } else {
+        spoiler.reveal();
+      }
+    });
   }
 }

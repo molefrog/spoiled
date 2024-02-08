@@ -1,12 +1,11 @@
-.spoiler {
+.spoiler.hidden {
   background: paint(spoiler) repeat-x left center / 333px 28px;
-
   color: transparent;
   border-color: transparent;
   text-decoration-color: transparent;
   text-emphasis-color: transparent;
 }
 
-.spoiler > * {
+.spoiler.hidden > * {
   opacity: 0;
 }

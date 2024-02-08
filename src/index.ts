@@ -31,7 +31,7 @@ class Spoiler {
     this.el.classList.add(scopedStyles.spoiler);
 
     this.applyOptions(options);
-    this.startAnimation();
+    this.hide();
   }
 
   applyOptions({ fps = DEFAULT_FPS }: SpoilerOptions = {}) {
@@ -50,6 +50,20 @@ class Spoiler {
     if (!isInline) {
       this.el.style.setProperty("--max-fps", this.maxFPS.toString());
     }
+  }
+
+  revealed() {
+    return !this.el.classList.contains(scopedStyles.hidden);
+  }
+
+  hide() {
+    this.el.classList.add(scopedStyles.hidden);
+    this.startAnimation();
+  }
+
+  reveal() {
+    this.stopAnimation();
+    this.el.classList.remove(scopedStyles.hidden);
   }
 
   #_t = 0.0;
