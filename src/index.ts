@@ -52,7 +52,7 @@ class Spoiler {
     this.maxFPS = prefersReducedMotion ? 0 : fps;
 
     const isInline = getComputedStyle(this.el).getPropertyValue("display") === "inline";
-    this.useBackgroundStyle("auto", "auto");
+    this.useBackgroundStyle("auto", "auto", { tile: false });
 
     /* block elements */
     if (!isInline) {
@@ -65,7 +65,7 @@ class Spoiler {
         this.useBackgroundStyle(
           Math.min(rect.width, TILE_LIMIT),
           Math.min(rect.height, TILE_LIMIT),
-          { repeat: true }
+          { tile: true }
         );
 
         /* no tiling and has enough space for a gap */
@@ -80,7 +80,7 @@ class Spoiler {
 
       // TODO!
       const INLINE_TILE_LIMIT = 333;
-      this.useBackgroundStyle(INLINE_TILE_LIMIT, heightOfLine, { repeat: true });
+      this.useBackgroundStyle(INLINE_TILE_LIMIT, heightOfLine, { tile: true });
 
       // use top/bottom gaps only
       const vgap = Math.min(heightOfLine / 5 /* magic number */, gap);
@@ -90,13 +90,13 @@ class Spoiler {
     this.el.style.setProperty("--mimic-words", String(mimicWords));
   }
 
-  useBackgroundStyle(ws: string | number, hs: string | number, options?: { repeat: boolean }) {
+  useBackgroundStyle(ws: string | number, hs: string | number, options?: { tile: boolean }) {
     ws = typeof ws === "number" ? `${ws}px` : ws;
     hs = typeof hs === "number" ? `${hs}px` : hs;
 
-    this.el.style.background = `paint(spoiler) ${
-      options?.repeat ? "repeat" : ""
-    } center center / ${ws} ${hs}`;
+    const repeatPosition = options?.tile ? "repeat left center" : "no-repeat center center";
+
+    this.el.style.background = `paint(spoiler) ${repeatPosition} / ${ws} ${hs}`;
   }
 
   revealed() {

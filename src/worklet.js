@@ -39,22 +39,6 @@ const cycleBounds = ([x, y], [w, h], r) => {
   ];
 };
 
-const words = "5344247686631652935544373471676176265274".split("").map((x) => parseInt(x, 10));
-
-const wordDist = (pos, gap, em) => {
-  // i=0..1 gap=0..1
-  let marker = 0,
-    i = 0;
-  chunks = [];
-  do {
-    chunks.push([marker, (marker = M.min(1, marker + words[i++ % words.length] * em))]);
-    marker += gap;
-  } while (marker < 1);
-  chunks[chunks.length - 1][1] = 1;
-
-  const len = chunks.map(([a, b]) => b - a).reduce((a, b) => a + b, 0);
-};
-
 /**
  * WORKLET
  */
@@ -95,7 +79,7 @@ class SpoilerPainter {
       width = size.width / dprx,
       height = size.height / dprx,
       // gaps to the edges
-      [vgap, hgap] = (getCSSVar(props, "--gap") || "0px 0px").split(" ").map(parseFloat),
+      [hgap, vgap] = (getCSSVar(props, "--gap") || "0px 0px").split(" ").map(parseFloat),
       // assuming density is constant, total number of particles depends
       // on the sq area, but limit it so it doesn't hurt performance
       density = 8,
@@ -104,12 +88,15 @@ class SpoilerPainter {
       // particles that have initial size of 0 px
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
 
+    // TODO: Adjust params
+    const wordDist = makeWordDistribution(width - 2 * hgap, height - 2 * vgap, height * 0.35);
+
     ctx.clearRect(0, 0, size.width, size.height);
 
     for (let i = 0; i < n; ++i) {
       /** Initial values */
-      const x0 = rand(vgap, width - vgap);
-      const y0 = rand(hgap, height - hgap);
+      const x0 = hgap + wordDist(rand());
+      const y0 = rand(vgap, height - vgap);
 
       const v0mag = rand(vmin, vmax),
         size0 = rand(1.0, 1.0 + sizedev);
@@ -163,6 +150,44 @@ class SpoilerPainter {
     }
   }
 }
+
+const FAKE_WORDS = [5, 3, 4, 4, 2, 4, 7, 6, 8, 6, 3, 1, 6];
+
+const makeWordDistribution = (l, em, gap) => {
+  // i=0..1 gap=0..1
+  let marker = 0,
+    i = 0,
+    wordslen = 0,
+    chunks = [];
+
+  do {
+    const endOfWord = Math.min(l, marker + FAKE_WORDS[i++ % FAKE_WORDS.length] * em);
+    wordslen += endOfWord - marker; // total length of words excl gaps
+
+    chunks.push([marker, (marker = endOfWord)]);
+  } while ((marker += gap) < l);
+
+  // ensure the last word always ends at the end of the line
+  if (chunks.length >= 0) chunks[chunks.length - 1][1] = l;
+
+  return (t) => {
+    const w = t * wordslen;
+
+    let m = 0.0;
+
+    for (const [start, end] of chunks) {
+      const wordLength = end - start;
+
+      if (m < w && w <= m + wordLength) {
+        return start + w - m;
+      }
+
+      m += wordLength;
+    }
+
+    return 0;
+  };
+};
 
 export { SpoilerPainter };
 if (_IS_WORKLET) registerPaint("spoiler", SpoilerPainter);
