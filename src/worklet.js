@@ -89,7 +89,9 @@ class SpoilerPainter {
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
 
     // TODO: Adjust params
-    const wordDist = makeWordDistribution(width - 2 * hgap, height - 2 * vgap, height * 0.35);
+    const wordDist = mimicWords
+      ? makeWordDistribution(width - 2 * hgap, height - 2 * vgap, height * 0.35)
+      : (x) => x * (width - 2 * hgap);
 
     ctx.clearRect(0, 0, size.width, size.height);
 
