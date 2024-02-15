@@ -1,17 +1,18 @@
 import "./demo.css";
 import { Spoiler } from "../src/index";
 
-window.addEventListener("load", () => {
+document.addEventListener("DOMContentLoaded", () => {
   for (const el of document.querySelectorAll("spoiler, .spoiler")) {
     if (el instanceof HTMLElement) {
-      const accent = el.classList.contains("dark-theme") ? "rgb(200, 200, 200)" : undefined;
+      const _accent = el.classList.contains("dark-theme") ? "rgb(200, 200, 200)" : undefined;
 
-      const spoiler = new Spoiler(el, { fps: 24 /*, accentColor: accent */ });
+      const spoiler = new Spoiler(el, { fps: 24 /*, accentColor: _accent */ });
+
       el.addEventListener("click", () => {
-        if (spoiler.revealed()) {
-          spoiler.hide();
+        if (spoiler.isHidden) {
+          spoiler.reveal({ animate: true });
         } else {
-          spoiler.reveal();
+          spoiler.hide();
         }
       });
     }

@@ -1,24 +1,14 @@
 import workletSource from "./worklet.js?raw";
 import scopedStyles from "./spoiler.module.css";
 
-declare global {
-  namespace CSS {
-    module paintWorklet {
-      function addModule(moduleURL: string): Promise<void>;
-    }
-  }
+interface InitOptions {
+  readonly revealed?: boolean;
 }
-
-// register paint inline worklet
-CSS.paintWorklet.addModule(
-  URL.createObjectURL(new Blob([workletSource], { type: "application/javascript" }))
-);
 
 interface SpoilerOptions {
   readonly fps?: number;
   readonly gap?: number;
   readonly mimicWords?: boolean;
-  // readonly accentColor?: string;
 }
 
 const DEFAULT_FPS = 24;
@@ -32,12 +22,15 @@ class Spoiler {
   readonly el: HTMLElement;
   maxFPS: number = DEFAULT_FPS;
 
-  constructor(el: HTMLElement, options: SpoilerOptions = {}) {
+  constructor(el: HTMLElement, options: SpoilerOptions & InitOptions = {}) {
     this.el = el;
     this.el.classList.add(scopedStyles.spoiler);
 
     this.update(options);
-    this.hide();
+
+    if (!options.revealed) {
+      this.hide();
+    }
   }
 
   /**
@@ -99,22 +92,41 @@ class Spoiler {
     this.el.style.background = `paint(spoiler) ${repeatPosition} / ${ws} ${hs}`;
   }
 
-  revealed() {
-    return !this.el.classList.contains(scopedStyles.hidden);
+  get isHidden() {
+    return this.el.classList.contains(scopedStyles.hidden);
   }
 
   hide() {
     this.el.classList.add(scopedStyles.hidden);
+    this.#tstop = null; // reset the stop point
     this.startAnimation();
   }
 
-  reveal() {
-    this.stopAnimation();
+  reveal({ animate }: { animate?: boolean } = {}) {
+    if (animate) {
+      this.#tstop = this.t;
+    } else {
+      this.stopAnimation();
+    }
     this.el.classList.remove(scopedStyles.hidden);
   }
 
   #_t = 0.0;
   #t0 = 0.0;
+  #_tstop: number | null = null;
+
+  get #tstop(): number | null {
+    return this.#_tstop;
+  }
+
+  set #tstop(value: number | null) {
+    this.#_tstop = value;
+    if (value) {
+      this.el.style.setProperty("--t-stop", value.toFixed(3)); // 1ms precision
+    } else {
+      this.el.style.removeProperty("--t-stop");
+    }
+  }
 
   get t() {
     return this.#_t;
@@ -127,7 +139,9 @@ class Spoiler {
 
   // animation loop
   #frame = (now: DOMHighResTimeStamp) => {
-    if (this.maxFPS > 0) {
+    const shouldStop = this.#tstop && this.t > this.#tstop + 2; /* TODO: constant */
+
+    if (this.maxFPS > 0 && !shouldStop) {
       this.#raf = requestAnimationFrame(this.#frame);
     }
 
@@ -160,5 +174,18 @@ class Spoiler {
     return this.#raf !== null;
   }
 }
+
+declare global {
+  namespace CSS {
+    module paintWorklet {
+      function addModule(moduleURL: string): Promise<void>;
+    }
+  }
+}
+
+// register paint inline worklet
+CSS.paintWorklet.addModule(
+  URL.createObjectURL(new Blob([workletSource], { type: "application/javascript" }))
+);
 
 export { Spoiler };
