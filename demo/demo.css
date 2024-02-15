@@ -53,6 +53,9 @@ section {
   vertical-align: top;
 }
 
-section > canvas {
-  display: block;
+.block {
+  background-color: blue;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 8px;
+  box-sizing: border-box;
 }
