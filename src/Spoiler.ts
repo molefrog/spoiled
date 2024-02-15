@@ -8,6 +8,7 @@ interface InitOptions {
 interface SpoilerOptions {
   readonly fps?: number;
   readonly gap?: number | boolean;
+  readonly density?: number;
   readonly mimicWords?: boolean;
 }
 
@@ -53,7 +54,7 @@ class Spoiler {
    * `gap` - in px a gap that particles won't spawn within (ignored for elements that exceed
    *         the size limit)
    */
-  update({ fps = DEFAULT_FPS, gap = 6, mimicWords = true }: SpoilerOptions = {}) {
+  update({ fps = DEFAULT_FPS, gap = 6, mimicWords = true, density = 0.08 }: SpoilerOptions = {}) {
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
 
@@ -96,6 +97,7 @@ class Spoiler {
     }
 
     this.el.style.setProperty("--mimic-words", String(mimicWords));
+    this.el.style.setProperty("--density", String(density));
   }
 
   useBackgroundStyle(ws: string | number, hs: string | number, options?: { tile: boolean }) {

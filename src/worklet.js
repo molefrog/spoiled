@@ -58,7 +58,7 @@ class SpoilerPainter {
    defined for the element, return them in the specified array
   */
   static get inputProperties() {
-    return ["--t", "--t-stop", "--gap", "--accent", "--mimic-words"];
+    return ["--t", "--t-stop", "--gap", "--accent", "--mimic-words", "--density"];
   }
 
   paint(ctx, size, props) {
@@ -83,8 +83,8 @@ class SpoilerPainter {
       [hgap, vgap] = (getCSSVar(props, "--gap") || "0px 0px").split(" ").map(parseFloat),
       // assuming density is constant, total number of particles depends
       // on the sq area, but limit it so it doesn't hurt performance
-      density = 8,
-      n = M.min(5000, ((width - 2 * hgap) * (height - 2 * vgap)) / density),
+      density = parseFloat(getCSSVar(props, "--density")) || 0.08,
+      n = M.min(5000, density * (width - 2 * hgap) * (height - 2 * vgap)),
       // size deviation, disabled for low DPR devices, so we don't end up with
       // particles that have initial size of 0 px
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
@@ -100,7 +100,7 @@ class SpoilerPainter {
       ? // we assume that the space character is 3 times smaller than a character,
         // (which is an average difference between an EM and a whitespace)
         // however it can't be too small otherwise it will be barely visible
-        makeWordDistribution(lineWidth, lineHeight, Math.max(14, lineHeight / 3))
+        makeWordDistribution(lineWidth, lineHeight, Math.max(12, lineHeight / 3))
       : (x) => x * (width - 2 * hgap);
 
     ctx.clearRect(0, 0, size.width, size.height);
