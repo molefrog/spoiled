@@ -58,14 +58,15 @@ class SpoilerPainter {
    defined for the element, return them in the specified array
   */
   static get inputProperties() {
-    return ["--t", "--gap", "--accent", "--mimic-words"];
+    return ["--t", "--t-stop", "--gap", "--accent", "--mimic-words"];
   }
 
   paint(ctx, size, props) {
     const rand = lcgrand(4011505); // predictable random
 
     // global world time in seconds (always increasing)
-    const worldt = parseFloat(getCSSVar(props, "--t")) || 0,
+    const tworld = parseFloat(getCSSVar(props, "--t")) || 0,
+      tstop = parseFloat(getCSSVar(props, "--t-stop")) || Infinity,
       // `devicePixelRatio` and `dprx` are not the same
       // user agents use higher density bitmaps for canvases when
       // painting from worklets, so 1px stands for 1px on the screen
@@ -87,6 +88,9 @@ class SpoilerPainter {
       // size deviation, disabled for low DPR devices, so we don't end up with
       // particles that have initial size of 0 px
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
+
+    // are we past the break point?
+    const isPastStopPoint = tworld > tstop;
 
     // TODO: Adjust params
     const wordDist = mimicWords
@@ -116,14 +120,19 @@ class SpoilerPainter {
       const lifetime = rand(0.3, 1.5); // in sec
       const respawn = rand(0, 1); // how long until the next respawn
 
-      // make particle appear in 0.2s and disappear in 0.3s
-      const visibilityFn = trapezoidalWave(lifetime, 0.2, 0.3);
+      // make particles appear in 0.15s and disappear in 0.3s
+      const visibilityFn = trapezoidalWave(lifetime, 0.15, 0.3);
 
       // ensures that particles don't all spawn at the same time
       const phase = rand(0, lifetime + respawn);
-      let t = M.min(lifetime, (worldt + phase) % (lifetime + respawn));
 
-      if (t >= lifetime) continue;
+      const cantSpawnNoMore =
+        Math.floor((tstop + phase) / (lifetime + respawn)) <
+        Math.floor((tworld + phase) / (lifetime + respawn));
+
+      if (cantSpawnNoMore) continue; // can not respawn after `tstop`
+
+      let t = M.min(lifetime, (tworld + phase) % (lifetime + respawn));
 
       const vx = vx0 - 0.5 * frict * t * vx0norm;
       const vy = vy0 - 0.5 * frict * t * vy0norm;
