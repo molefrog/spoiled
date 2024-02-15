@@ -7,7 +7,7 @@ interface InitOptions {
 
 interface SpoilerOptions {
   readonly fps?: number;
-  readonly gap?: number;
+  readonly gap?: number | boolean;
   readonly mimicWords?: boolean;
 }
 
@@ -25,6 +25,8 @@ const BLOCK_MAX_TILE = 293; // prime
 const INLINE_MAX_TILE = 333; // prime
 
 const REVEAL_ANIM_DURATION = 2; // in seconds
+
+const GAP_RATIO = 8.0;
 
 // Check if the user has requested reduced motion
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -51,7 +53,7 @@ class Spoiler {
    * `gap` - in px a gap that particles won't spawn within (ignored for elements that exceed
    *         the size limit)
    */
-  update({ fps = DEFAULT_FPS, gap = 16, mimicWords = true }: SpoilerOptions = {}) {
+  update({ fps = DEFAULT_FPS, gap = 6, mimicWords = true }: SpoilerOptions = {}) {
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
 
@@ -71,12 +73,14 @@ class Spoiler {
           Math.min(rect.height, BLOCK_MAX_TILE),
           { tile: true }
         );
+      } else {
+        // we can draw the whole block without tiling meaning we can use gaps
+        // cap the gap value, so that it looks nice on smaller elements
+        const capGap = Math.floor(
+          Math.min(Number(gap), rect.width / GAP_RATIO, rect.height / GAP_RATIO)
+        );
 
-        /* 
-          no tiling and has enough space for a gap 
-        */
-      } else if (rect.width >= 4 * gap && rect.height >= 4 * gap) {
-        this.el.style.setProperty("--gap", `${gap}px ${gap}px`);
+        this.el.style.setProperty("--gap", `${capGap}px ${capGap}px`);
       }
     }
 
@@ -87,8 +91,8 @@ class Spoiler {
       this.useBackgroundStyle(INLINE_MAX_TILE, heightOfLine, { tile: true });
 
       // use top/bottom gaps only
-      const vgap = Math.min(heightOfLine / 5 /* magic number */, gap);
-      this.el.style.setProperty("--gap", `0 ${vgap}px`);
+      const capGap = Math.floor(Math.min(heightOfLine / GAP_RATIO, Number(gap)));
+      this.el.style.setProperty("--gap", `0 ${capGap}px`);
     }
 
     this.el.style.setProperty("--mimic-words", String(mimicWords));
