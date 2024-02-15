@@ -15,6 +15,8 @@ const DEFAULT_FPS = 24;
 
 const TILE_LIMIT = 293; // prime
 
+const REVEAL_ANIM_DURATION = 2; // in seconds
+
 // Check if the user has requested reduced motion
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -87,9 +89,9 @@ class Spoiler {
     ws = typeof ws === "number" ? `${ws}px` : ws;
     hs = typeof hs === "number" ? `${hs}px` : hs;
 
-    const repeatPosition = options?.tile ? "repeat left center" : "no-repeat center center";
+    const repeatAndPosition = options?.tile ? "repeat left center" : "no-repeat center center";
 
-    this.el.style.background = `paint(spoiler) ${repeatPosition} / ${ws} ${hs}`;
+    this.el.style.background = `paint(spoiler) ${repeatAndPosition} / ${ws} ${hs}`;
   }
 
   get isHidden() {
@@ -99,6 +101,7 @@ class Spoiler {
   hide() {
     this.el.classList.add(scopedStyles.hidden);
     this.#tstop = null; // reset the stop point
+
     this.startAnimation();
   }
 
@@ -139,7 +142,7 @@ class Spoiler {
 
   // animation loop
   #frame = (now: DOMHighResTimeStamp) => {
-    const shouldStop = this.#tstop && this.t > this.#tstop + 2; /* TODO: constant */
+    const shouldStop = this.#tstop && this.t > this.#tstop + REVEAL_ANIM_DURATION;
 
     if (this.maxFPS > 0 && !shouldStop) {
       this.#raf = requestAnimationFrame(this.#frame);
