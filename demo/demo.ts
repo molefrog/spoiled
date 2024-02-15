@@ -1,5 +1,5 @@
 import "./demo.css";
-import { Spoiler } from "../src/index";
+import { Spoiler } from "../src/Spoiler";
 
 document.addEventListener("DOMContentLoaded", () => {
   for (const el of document.querySelectorAll("spoiler, .spoiler")) {

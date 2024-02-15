@@ -1,5 +1,5 @@
 import workletSource from "./worklet.js?raw";
-import scopedStyles from "./spoiler.module.css";
+import scopedStyles from "./Spoiler.module.css";
 
 interface InitOptions {
   readonly revealed?: boolean;
