@@ -13,7 +13,16 @@ interface SpoilerOptions {
 
 const DEFAULT_FPS = 24;
 
-const TILE_LIMIT = 293; // prime
+/*
+ * The maximum size of a block that can be drawn without using tiling
+ * (to improve performance and enable gaps)
+ */
+const BLOCK_MAX_TILE = 293; // prime
+
+/*
+ * The maximum width of an inline element that can be drawn without using tiling
+ */
+const INLINE_MAX_TILE = 333; // prime
 
 const REVEAL_ANIM_DURATION = 2; // in seconds
 
@@ -46,36 +55,36 @@ class Spoiler {
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
 
-    const isInline = getComputedStyle(this.el).getPropertyValue("display") === "inline";
+    const isBlockElement = getComputedStyle(this.el).getPropertyValue("display") !== "inline";
     this.useBackgroundStyle("auto", "auto", { tile: false });
 
     /* block elements */
-    if (!isInline) {
+    if (isBlockElement) {
       // this feature can't be used with block elements!
       mimicWords = false;
 
       const rect = this.el.getBoundingClientRect();
 
-      if (rect.width * rect.height > TILE_LIMIT * TILE_LIMIT) {
+      if (rect.width * rect.height > BLOCK_MAX_TILE * BLOCK_MAX_TILE) {
         this.useBackgroundStyle(
-          Math.min(rect.width, TILE_LIMIT),
-          Math.min(rect.height, TILE_LIMIT),
+          Math.min(rect.width, BLOCK_MAX_TILE),
+          Math.min(rect.height, BLOCK_MAX_TILE),
           { tile: true }
         );
 
-        /* no tiling and has enough space for a gap */
-      } else if (rect.width >= 3 * gap && rect.height >= 4 * gap) {
+        /* 
+          no tiling and has enough space for a gap 
+        */
+      } else if (rect.width >= 4 * gap && rect.height >= 4 * gap) {
         this.el.style.setProperty("--gap", `${gap}px ${gap}px`);
       }
     }
 
-    if (isInline) {
+    if (!isBlockElement) {
       const rects = [...this.el.getClientRects()];
       const heightOfLine = Math.min(...rects.map((r) => r.height));
 
-      // TODO!
-      const INLINE_TILE_LIMIT = 333;
-      this.useBackgroundStyle(INLINE_TILE_LIMIT, heightOfLine, { tile: true });
+      this.useBackgroundStyle(INLINE_MAX_TILE, heightOfLine, { tile: true });
 
       // use top/bottom gaps only
       const vgap = Math.min(heightOfLine / 5 /* magic number */, gap);
