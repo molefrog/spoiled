@@ -93,8 +93,14 @@ class SpoilerPainter {
     const isPastStopPoint = tworld > tstop;
 
     // TODO: Adjust params
+    const lineWidth = width - 2 * hgap,
+      lineHeight = height - 2 * vgap;
+
     const wordDist = mimicWords
-      ? makeWordDistribution(width - 2 * hgap, height - 2 * vgap, height * 0.35)
+      ? // we assume that the space character is 3 times smaller than a character,
+        // (which is an average difference between an EM and a whitespace)
+        // however it can't be too small otherwise it will be barely visible
+        makeWordDistribution(lineWidth, lineHeight, Math.max(14, lineHeight / 3))
       : (x) => x * (width - 2 * hgap);
 
     ctx.clearRect(0, 0, size.width, size.height);
@@ -164,22 +170,28 @@ class SpoilerPainter {
 
 const FAKE_WORDS = [5, 3, 4, 4, 2, 4, 7, 6, 8, 6, 3, 1, 6];
 
-const makeWordDistribution = (l, em, gap) => {
-  // i=0..1 gap=0..1
+/**
+ *
+ * @param {number} line width of the line
+ * @param {number} em width of a character
+ * @param {number} space whitespace width
+ * @returns
+ */
+const makeWordDistribution = (line, em, space) => {
   let marker = 0,
     i = 0,
     wordslen = 0,
     chunks = [];
 
   do {
-    const endOfWord = Math.min(l, marker + FAKE_WORDS[i++ % FAKE_WORDS.length] * em);
+    const endOfWord = Math.min(line, marker + FAKE_WORDS[i++ % FAKE_WORDS.length] * em);
     wordslen += endOfWord - marker; // total length of words excl gaps
 
     chunks.push([marker, (marker = endOfWord)]);
-  } while ((marker += gap) < l);
+  } while ((marker += space) < line);
 
   // ensure the last word always ends at the end of the line
-  if (chunks.length >= 0) chunks[chunks.length - 1][1] = l;
+  if (chunks.length >= 0) chunks[chunks.length - 1][1] = line;
 
   return (t) => {
     const w = t * wordslen;
