@@ -1,4 +1,28 @@
+.spoiler {
+  /* overriden in Spoiler */
+  --reveal-duration: 0s;
+  --hide-duration: 0s;
+
+  --tr-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuint (easings.net) */
+  --tr-duration: var(--reveal-duration);
+  --tr-easing: var(--tr-ease-out-quint) 0.2s;
+
+  background-clip: border-box;
+  transition: color var(--tr-duration) var(--tr-easing),
+    border-color var(--tr-duration) var(--tr-easing),
+    text-decoration-color var(--tr-duration) var(--tr-easing),
+    text-emphasis-color var(--tr-duration) var(--tr-easing);
+}
+
+.spoiler > * {
+  transition: opacity var(--tr-duration) var(--tr-easing),
+    filter var(--tr-duration) var(--tr-easing);
+}
+
 .spoiler.hidden {
+  --tr-duration: var(--hide-duration);
+  --tr-easing: var(--tr-ease-out-quint) 0s;
+
   color: transparent;
   border-color: transparent;
   text-decoration-color: transparent;
@@ -7,4 +31,5 @@
 
 .spoiler.hidden > * {
   opacity: 0;
+  filter: blur(1px);
 }

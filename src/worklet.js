@@ -97,10 +97,10 @@ class SpoilerPainter {
       lineHeight = height - 2 * vgap;
 
     const wordDist = mimicWords
-      ? // we assume that the space character is 3 times smaller than a character,
+      ? // we assume that the space character is 4 times smaller than a character,
         // (which is an average difference between an EM and a whitespace)
         // however it can't be too small otherwise it will be barely visible
-        makeWordDistribution(lineWidth, lineHeight, Math.max(12, lineHeight / 3))
+        makeWordDistribution(lineWidth, lineHeight, Math.max(12, lineHeight / 4))
       : (x) => x * (width - 2 * hgap);
 
     ctx.clearRect(0, 0, size.width, size.height);

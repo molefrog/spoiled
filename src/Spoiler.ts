@@ -12,6 +12,10 @@ interface SpoilerOptions {
   readonly mimicWords?: boolean;
 }
 
+interface TransitionOptions {
+  readonly animate?: boolean | number;
+}
+
 const DEFAULT_FPS = 24;
 
 /*
@@ -26,6 +30,9 @@ const BLOCK_MAX_TILE = 293; // prime
 const INLINE_MAX_TILE = 333; // prime
 
 const REVEAL_ANIM_DURATION = 2; // in seconds
+
+const DEFAULT_HIDE_DURATION = 0.5; // in seconds
+const DEFAULT_REVEAL_DURATION = 1; // in seconds
 
 const GAP_RATIO = 8.0;
 
@@ -43,7 +50,7 @@ class Spoiler {
     this.update(options);
 
     if (!options.revealed) {
-      this.hide();
+      this.hide({ animate: false });
     }
   }
 
@@ -113,19 +120,27 @@ class Spoiler {
     return this.el.classList.contains(scopedStyles.hidden);
   }
 
-  hide() {
-    this.el.classList.add(scopedStyles.hidden);
-    this.#tstop = null; // reset the stop point
+  hide({ animate }: TransitionOptions = { animate: true }) {
+    const duration = animate === true ? DEFAULT_HIDE_DURATION : Number(animate);
 
+    this.el.style.setProperty("--hide-duration", `${duration}s`);
+    this.el.classList.add(scopedStyles.hidden);
+
+    this.#tstop = null; // reset the stop point
+    this.t = 0; // reset the clock
     this.startAnimation();
   }
 
-  reveal({ animate }: { animate?: boolean } = {}) {
-    if (animate) {
+  reveal({ animate }: TransitionOptions = { animate: true }) {
+    const duration = animate === true ? DEFAULT_REVEAL_DURATION : Number(animate);
+    this.el.style.setProperty("--reveal-duration", `${duration}s`);
+
+    if (duration > 0) {
       this.#tstop = this.t;
     } else {
       this.stopAnimation();
     }
+
     this.el.classList.remove(scopedStyles.hidden);
   }
 

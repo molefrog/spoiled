@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       el.addEventListener("click", () => {
         if (spoiler.isHidden) {
-          spoiler.reveal({ animate: true });
+          spoiler.reveal();
         } else {
           spoiler.hide();
         }

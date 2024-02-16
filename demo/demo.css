@@ -59,3 +59,8 @@ section {
   margin-bottom: 8px;
   box-sizing: border-box;
 }
+
+.spoiler,
+spoiler {
+  cursor: pointer;
+}
