@@ -65,10 +65,7 @@ class SpoilerPainter {
   paint(ctx, size, props) {
     const rand = lcgrand(4011505); // predictable random
 
-    // global world time in seconds (always increasing)
-    const tworld = parseFloat(getCSSVar(props, "--t")) || 0,
-      tstop = parseFloat(getCSSVar(props, "--t-stop")) || Infinity,
-      // `devicePixelRatio` and `dprx` are not the same
+    const // `devicePixelRatio` and `dprx` are not the same
       // user agents use higher density bitmaps for canvases when
       // painting from worklets, so 1px stands for 1px on the screen
       dprx = _IS_WORKLET ? 1.0 : devicePixelRatio,
@@ -82,13 +79,25 @@ class SpoilerPainter {
       height = size.height / dprx,
       // gaps to the edges
       [hgap, vgap] = (getCSSVar(props, "--gap") || "0px 0px").split(" ").map(parseFloat),
-      // assuming density is constant, total number of particles depends
-      // on the sq area, but limit it so it doesn't hurt performance
       density = parseFloat(getCSSVar(props, "--density")) || 0.08,
-      n = M.min(5000, density * (width - 2 * hgap) * (height - 2 * vgap)),
       // size deviation, disabled for low DPR devices, so we don't end up with
       // particles that have initial size of 0 px
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
+
+    const World = {
+      // global world time in seconds (always increasing)
+      t: parseFloat(getCSSVar(props, "--t")) || 0,
+
+      // fade in animation starts after this point in time
+      tStop: parseFloat(getCSSVar(props, "--t-stop")) || Infinity,
+
+      // fade out animation starts after this point in time
+      tStart: 0, //parseFloat(getCSSVar(props, "--t-start")) || -Infinity,
+
+      // given `density`, total number of particles depends
+      // on the sq area, but we limit it so it doesn't hurt performance
+      n: M.round(M.min(5000, density * (width - 2 * hgap) * (height - 2 * vgap))),
+    };
 
     const lineWidth = width - 2 * hgap,
       lineHeight = height - 2 * vgap;
@@ -102,7 +111,7 @@ class SpoilerPainter {
 
     ctx.clearRect(0, 0, size.width, size.height);
 
-    for (let i = 0; i < n; ++i) {
+    for (let i = 0; i < World.n; ++i) {
       /** Initial values */
       const x0 = hgap + wordDist(rand());
       const y0 = rand(vgap, height - vgap);
@@ -130,12 +139,12 @@ class SpoilerPainter {
       const phase = rand(0, lifetime + respawn);
 
       const cantSpawnNoMore =
-        Math.floor((tstop + phase) / (lifetime + respawn)) <
-        Math.floor((tworld + phase) / (lifetime + respawn));
+        Math.floor((World.tStop + phase) / (lifetime + respawn)) <
+        Math.floor((World.t + phase) / (lifetime + respawn));
 
       if (cantSpawnNoMore) continue; // can not respawn after `tstop`
 
-      let t = M.min(lifetime, (tworld + phase) % (lifetime + respawn));
+      let t = M.min(lifetime, (World.t + phase) % (lifetime + respawn));
 
       const vx = vx0 - 0.5 * frict * t * vx0norm;
       const vy = vy0 - 0.5 * frict * t * vy0norm;
@@ -143,8 +152,7 @@ class SpoilerPainter {
       const x = x0 + vx * t;
       const y = y0 + vy * t;
 
-      const world = { n, t: tworld, tstop, tstart: 0 };
-      const fade = animateFadeInOut(world, i);
+      const fade = animateFadeInOut(World, i);
 
       const alpha = fade * (1 - t / lifetime);
       const size = fade * (size0 * visibilityFn(t));
@@ -168,23 +176,33 @@ class SpoilerPainter {
   }
 }
 
-// Fade out when spoiler is revealed
-// `tstop` is not set (Infinity) -> `fade` = 1
-// TODO: parameters, easing
-const FADE_D = 0.5;
+/**
+ * Returns a fade in/out scale factor for a particle at a given index
+ * @param {object} World world state, including current time and stop points
+ * @param {number} idx index of the particle
+ * @param {number} duration total time of the animation
+ * @returns number between 0 and 1 (fully opaque)
+ *
+ * How animation is performed. Particles start to animate sequentially, from
+ * 0 to 2 / 3 of the duration, the animation lasts for 1 / 3 of the duration.
+ *
+ *  ___duration___
+ * [....+....+....]
+ *  1   5   10.....
+ */
+const animateFadeInOut = (World, idx, duration = 1, ease = easeOutCubic) => {
+  const direction = World.t >= World.tStop ? "out" : "in";
+  const animationStartT = direction === "in" ? World.tStart : World.tStop;
 
-const animateFadeInOut = (World, idx) => {
-  const direction = World.tstart >= 0 ? "in" : "out";
-  const animationStartT = direction === "in" ? World.tstart : World.tstop;
-
-  const t = animationStartT + (FADE_D * idx) / World.n; // when this particle should start fading
-  let fade = clamp(0, ((World.t - t) / FADE_D) * 2, 1);
+  // when this particle should start fading
+  const t = animationStartT + ((2 / 3) * duration * idx) / World.n;
+  let fade = clamp(0, ((World.t - t) / (duration / 3)) * 2, 1);
 
   if (direction === "out") {
     fade = 1 - fade; // 1 to 0
   }
 
-  return easeOutCubic(fade);
+  return ease(fade);
 };
 
 function easeOutCubic(t) {
