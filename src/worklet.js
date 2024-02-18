@@ -30,6 +30,7 @@ const trapezoidalWave = (l, a, b) => {
 
 const _cycle = (x, n) => ((x % n) + n) % n;
 const _mirror = (x, n, r) => (x < r ? n + x : x > n - r ? x - n : x);
+const clamp = (min, x, max) => Math.max(min, Math.min(x, max));
 
 const cycleBounds = ([x, y], [w, h], r) => {
   const [tx, ty] = [_cycle(x, w), _cycle(y, h)];
@@ -89,10 +90,6 @@ class SpoilerPainter {
       // particles that have initial size of 0 px
       sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
 
-    // are we past the break point?
-    const isPastStopPoint = tworld > tstop;
-
-    // TODO: Adjust params
     const lineWidth = width - 2 * hgap,
       lineHeight = height - 2 * vgap;
 
@@ -146,8 +143,14 @@ class SpoilerPainter {
       const x = x0 + vx * t;
       const y = y0 + vy * t;
 
-      const alpha = 1 - t / lifetime;
-      const size = size0 * visibilityFn(t);
+      // Fade out when spoiler is revealed
+      // `tstop` is not set (Infinity) -> `fade` = 1
+      // TODO: parameters, easing
+      const tFadeAfter = tstop + (0.75 * i) / n;
+      const fade = 1 - clamp(0, (tworld - tFadeAfter) / 0.25, 1);
+
+      const alpha = fade * (1 - t / lifetime);
+      const size = fade * (size0 * visibilityFn(t));
 
       for (const [wx, wy] of cycleBounds([x, y], [width, height], size / 2)) {
         ctx.beginPath();
