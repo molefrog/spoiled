@@ -143,11 +143,8 @@ class SpoilerPainter {
       const x = x0 + vx * t;
       const y = y0 + vy * t;
 
-      // Fade out when spoiler is revealed
-      // `tstop` is not set (Infinity) -> `fade` = 1
-      // TODO: parameters, easing
-      const tFadeAfter = tstop + (0.75 * i) / n;
-      const fade = 1 - clamp(0, (tworld - tFadeAfter) / 0.25, 1);
+      const world = { n, t: tworld, tstop, tstart: 0 };
+      const fade = animateFadeInOut(world, i);
 
       const alpha = fade * (1 - t / lifetime);
       const size = fade * (size0 * visibilityFn(t));
@@ -169,6 +166,29 @@ class SpoilerPainter {
       }
     }
   }
+}
+
+// Fade out when spoiler is revealed
+// `tstop` is not set (Infinity) -> `fade` = 1
+// TODO: parameters, easing
+const FADE_D = 0.5;
+
+const animateFadeInOut = (World, idx) => {
+  const direction = World.tstart >= 0 ? "in" : "out";
+  const animationStartT = direction === "in" ? World.tstart : World.tstop;
+
+  const t = animationStartT + (FADE_D * idx) / World.n; // when this particle should start fading
+  let fade = clamp(0, ((World.t - t) / FADE_D) * 2, 1);
+
+  if (direction === "out") {
+    fade = 1 - fade; // 1 to 0
+  }
+
+  return easeOutCubic(fade);
+};
+
+function easeOutCubic(t) {
+  return --t * t * t + 1;
 }
 
 const FAKE_WORDS = [5, 3, 4, 4, 2, 4, 7, 6, 8, 6, 3, 1, 6];
