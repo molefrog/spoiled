@@ -87,10 +87,10 @@ class SpoilerPainter {
 
     const World = {
       // global world time in seconds (always increasing)
-      t: parseFloat(getCSSVar(props, "--t")) || 0,
+      t: parseFloat(getCSSVar(props, "--t") ?? 0.0),
 
       // fade in animation starts after this point in time
-      tStop: parseFloat(getCSSVar(props, "--t-stop")) || Infinity,
+      tStop: parseFloat(getCSSVar(props, "--t-stop") ?? "Infinity"),
 
       // fade out animation starts after this point in time
       tStart: 0,
@@ -192,18 +192,24 @@ class SpoilerPainter {
  *  1   5   10.....
  */
 const animateFadeInOut = (World, idx, duration, ease = easeOutCubic) => {
-  const direction = World.t >= World.tStop ? "out" : "in";
+  const direction = World.tStop <= World.t ? "out" : "in";
   const animationStartT = direction === "in" ? World.tStart : World.tStop;
+
+  // console.log(World.t, World.tStop);
 
   // when this particle should start fading
   const t = animationStartT + ((2 / 3) * duration * idx) / World.n;
-  let fade = clamp(0, ((World.t - t) / (duration / 3)) * 2, 1);
+  const fadeFor = (1 / 3) * duration;
 
-  if (direction === "out") {
-    fade = 1 - fade; // 1 to 0
+  let progress = 0.0;
+
+  if (direction === "in") {
+    progress = (fadeFor + t - World.t) / fadeFor || 0;
+  } else {
+    progress = (World.t - t) / fadeFor || 1;
   }
 
-  return ease(fade);
+  return ease(1.0 - clamp(0, progress, 1));
 };
 
 function easeOutCubic(t) {

@@ -130,12 +130,17 @@ class Spoiler {
     return this.#_fadeDuration;
   }
 
-  hide({ animate }: TransitionOptions = { animate: true }) {
-    const duration = animate === true ? DEFAULT_FADE_DURATION : Number(animate);
+  parseFadeDuration(value: number | boolean | undefined) {
+    if (prefersReducedMotion) return 0;
 
+    const duration = value === true ? DEFAULT_FADE_DURATION : Number(value);
+    return duration;
+  }
+
+  hide({ animate }: TransitionOptions = { animate: true }) {
     this.el.classList.add(scopedStyles.hidden);
 
-    this.#fadeDuration = duration;
+    this.#fadeDuration = this.parseFadeDuration(animate);
     this.#tstop = null; // reset the stop point
     this.t = 0; // reset the clock
 
@@ -143,7 +148,7 @@ class Spoiler {
   }
 
   reveal({ animate }: TransitionOptions = { animate: true }) {
-    const duration = animate === true ? DEFAULT_FADE_DURATION : Number(animate);
+    const duration = this.parseFadeDuration(animate);
 
     this.el.classList.remove(scopedStyles.hidden);
 
@@ -168,7 +173,7 @@ class Spoiler {
 
   set #tstop(value: number | null) {
     this.#_tstop = value;
-    if (value) {
+    if (value !== null) {
       this.el.style.setProperty("--t-stop", value.toFixed(3)); // 1ms precision
     } else {
       this.el.style.removeProperty("--t-stop");
