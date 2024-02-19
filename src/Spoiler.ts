@@ -29,10 +29,7 @@ const BLOCK_MAX_TILE = 293; // prime
  */
 const INLINE_MAX_TILE = 333; // prime
 
-const REVEAL_ANIM_DURATION = 2; // in seconds
-
-const DEFAULT_HIDE_DURATION = 0.5; // in seconds
-const DEFAULT_REVEAL_DURATION = 1; // in seconds
+const DEFAULT_FADE_DURATION = 0.75; // in seconds
 
 const GAP_RATIO = 8.0;
 
@@ -103,7 +100,7 @@ class Spoiler {
       this.el.style.setProperty("--gap", `0 ${capGap}px`);
     }
 
-    this.el.style.setProperty("--mimic-words", String(mimicWords));
+    this.el.style.setProperty("--words", String(mimicWords));
     this.el.style.setProperty("--density", String(density));
   }
 
@@ -120,30 +117,47 @@ class Spoiler {
     return this.el.classList.contains(scopedStyles.hidden);
   }
 
-  hide({ animate }: TransitionOptions = { animate: true }) {
-    const duration = animate === true ? DEFAULT_HIDE_DURATION : Number(animate);
+  /**
+   * Hides and revelas the content. Turns the noise animation on and off.
+   */
+  #_fadeDuration: number = 0.0;
 
-    this.el.style.setProperty("--hide-duration", `${duration}s`);
+  set #fadeDuration(value: number | null) {
+    this.el.style.setProperty("--fade", `${(this.#_fadeDuration = Number(value))}s`);
+  }
+
+  get #fadeDuration(): number {
+    return this.#_fadeDuration;
+  }
+
+  hide({ animate }: TransitionOptions = { animate: true }) {
+    const duration = animate === true ? DEFAULT_FADE_DURATION : Number(animate);
+
     this.el.classList.add(scopedStyles.hidden);
 
+    this.#fadeDuration = duration;
     this.#tstop = null; // reset the stop point
     this.t = 0; // reset the clock
+
     this.startAnimation();
   }
 
   reveal({ animate }: TransitionOptions = { animate: true }) {
-    const duration = animate === true ? DEFAULT_REVEAL_DURATION : Number(animate);
-    this.el.style.setProperty("--reveal-duration", `${duration}s`);
-
-    if (duration > 0) {
-      this.#tstop = this.t;
-    } else {
-      this.stopAnimation();
-    }
+    const duration = animate === true ? DEFAULT_FADE_DURATION : Number(animate);
 
     this.el.classList.remove(scopedStyles.hidden);
+
+    this.#fadeDuration = duration;
+    this.#tstop = this.t;
+
+    if (duration <= 0) {
+      this.stopAnimation();
+    }
   }
 
+  /**
+   * Clock states
+   */
   #_t = 0.0;
   #t0 = 0.0;
   #_tstop: number | null = null;
@@ -172,7 +186,7 @@ class Spoiler {
 
   // animation loop
   #frame = (now: DOMHighResTimeStamp) => {
-    const shouldStop = this.#tstop && this.t > this.#tstop + REVEAL_ANIM_DURATION;
+    const shouldStop = this.#tstop && this.t > this.#tstop + this.#fadeDuration;
 
     if (this.maxFPS > 0 && !shouldStop) {
       this.#raf = requestAnimationFrame(this.#frame);

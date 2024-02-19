@@ -191,7 +191,7 @@ class SpoilerPainter {
  * [....+....+....]
  *  1   5   10.....
  */
-const animateFadeInOut = (World, idx, duration = 1, ease = easeOutCubic) => {
+const animateFadeInOut = (World, idx, duration, ease = easeOutCubic) => {
   const direction = World.t >= World.tStop ? "out" : "in";
   const animationStartT = direction === "in" ? World.tStart : World.tStop;
 
