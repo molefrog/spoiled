@@ -59,7 +59,7 @@ class SpoilerPainter {
    defined for the element, return them in the specified array
   */
   static get inputProperties() {
-    return ["--t", "--t-stop", "--gap", "--accent", "--mimic-words", "--density"];
+    return ["--t", "--t-stop", "--fade", "--gap", "--accent", "--words", "--density"];
   }
 
   paint(ctx, size, props) {
@@ -71,7 +71,7 @@ class SpoilerPainter {
       dprx = _IS_WORKLET ? 1.0 : devicePixelRatio,
       // hsl format
       accent = (getCSSVar(props, "--accent") || "0 0% 70%").split(" "),
-      mimicWords = getCSSVar(props, "--mimic-words") === "true",
+      mimicWords = getCSSVar(props, "--words") === "true",
       frict = 0,
       vmin = 2,
       vmax = 12,
@@ -82,7 +82,8 @@ class SpoilerPainter {
       density = parseFloat(getCSSVar(props, "--density")) || 0.08,
       // size deviation, disabled for low DPR devices, so we don't end up with
       // particles that have initial size of 0 px
-      sizedev = devicePixelRatio > 1 ? 0.5 : 0.0;
+      sizedev = devicePixelRatio > 1 ? 0.5 : 0.0,
+      fadeDuration = parseFloat(getCSSVar(props, "--fade")) || 0.0;
 
     const World = {
       // global world time in seconds (always increasing)
@@ -92,7 +93,7 @@ class SpoilerPainter {
       tStop: parseFloat(getCSSVar(props, "--t-stop")) || Infinity,
 
       // fade out animation starts after this point in time
-      tStart: 0, //parseFloat(getCSSVar(props, "--t-start")) || -Infinity,
+      tStart: 0,
 
       // given `density`, total number of particles depends
       // on the sq area, but we limit it so it doesn't hurt performance
@@ -152,7 +153,7 @@ class SpoilerPainter {
       const x = x0 + vx * t;
       const y = y0 + vy * t;
 
-      const fade = animateFadeInOut(World, i);
+      const fade = animateFadeInOut(World, i, fadeDuration);
 
       const alpha = fade * (1 - t / lifetime);
       const size = fade * (size0 * visibilityFn(t));
