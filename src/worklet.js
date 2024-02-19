@@ -195,8 +195,6 @@ const animateFadeInOut = (World, idx, duration, ease = easeOutCubic) => {
   const direction = World.tStop <= World.t ? "out" : "in";
   const animationStartT = direction === "in" ? World.tStart : World.tStop;
 
-  // console.log(World.t, World.tStop);
-
   // when this particle should start fading
   const t = animationStartT + ((2 / 3) * duration * idx) / World.n;
   const fadeFor = (1 / 3) * duration;
