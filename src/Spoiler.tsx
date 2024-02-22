@@ -10,7 +10,7 @@ export type SpoilerProps = {
   onChange?: (hidden: boolean) => void;
 } & Omit<JSX.IntrinsicElements["span"], "style">;
 
-const useIsHiddenState = (props: SpoilerProps) => {
+const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] => {
   const [isControlled] = useState(() => props.hidden !== undefined);
   const uncontrolledState = useState(props.defaultHidden ?? true);
 
@@ -21,7 +21,7 @@ const useIsHiddenState = (props: SpoilerProps) => {
   if (isControlled) {
     return [
       props.hidden!, // we know that it is not `undefined` because of the useState initializer
-      (value: boolean) => {
+      (value) => {
         // even though this doesn't apply to the controlled case, we call the callback
         props?.onChange?.(value);
       },
@@ -39,12 +39,13 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const painterRef = useRef<SpoilerPainter>();
 
   const [isHidden, _setIsHidden] = useIsHiddenState(props);
+  const [isHiddenInitial] = useState(() => isHidden);
 
   useLayoutEffect(() => {
     if (firstRun.current) {
       firstRun.current = false;
 
-      const spoiler = new SpoilerPainter(ref.current!, { fps: 24 });
+      const spoiler = new SpoilerPainter(ref.current!, { fps: 24, hidden: isHiddenInitial });
       painterRef.current = spoiler;
     }
 
@@ -56,10 +57,10 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   useLayoutEffect(() => {
     const painter = painterRef.current;
 
-    if (painter && hidden !== painter.isHidden) {
-      hidden ? painter.hide() : painter.reveal();
+    if (painter && isHidden !== painter.isHidden) {
+      isHidden ? painter.hide() : painter.reveal();
     }
-  }, [hidden]);
+  }, [isHidden]);
 
   const clx = [
     SpoilerStyles.spoiler,

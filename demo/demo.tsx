@@ -41,7 +41,7 @@ const App = () => {
   useEffect(() => {
     const int = setInterval(() => {
       setTimeBased((prev) => !prev);
-    }, 1000);
+    }, 2000);
 
     return () => {
       clearInterval(int);
@@ -60,9 +60,9 @@ const App = () => {
       <p>
         Woman in the Dunes was nominated for an Oscar and is generally considered his masterpiece.
         <Spoiler>
-          <span>(Teshighara was the first Japanese director ever nominated.)</span>
+          <span>(Teshighara was the first Japanese director ever nominated)</span>
         </Spoiler>
-        It stars <i>Eiji Okada</i>, who had come to international attention in Alain Resnais&apos;
+        . It stars <i>Eiji Okada</i>, who had come to international attention in Alain Resnais&apos;
         Hiroshima, Mon Amour. Kyoko Kishida, who plays the woman, had a long career. Teshighara used
         her several times again, and she appeared in Ozu&apos;s last film, An Autumn Afternoon
         (which will be shown again in our Auteurist Reprise series on May 26).

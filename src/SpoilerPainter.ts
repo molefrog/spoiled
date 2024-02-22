@@ -3,7 +3,7 @@ import workletSource from "./worklet.js?raw";
 const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
 
 interface InitOptions {
-  readonly revealed?: boolean;
+  readonly hidden?: boolean;
 }
 
 export interface SpoilerPainterOptions {
@@ -48,8 +48,10 @@ class SpoilerPainter {
 
     this.update(options);
 
-    if (!options.revealed) {
+    if (options.hidden === undefined || options.hidden === true) {
       this.hide({ animate: false });
+    } else {
+      this.reveal({ animate: false });
     }
   }
 
