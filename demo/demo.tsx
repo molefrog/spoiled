@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef } from "react";
 import * as ReactDOM from "react-dom/client";
 
 import { SpoilerPainter } from "../src/SpoilerPainter";
+import { Spoiler } from "../src/Spoiler";
 
 import "./demo.css";
 
@@ -38,14 +39,14 @@ const App = () => {
   return (
     <main>
       <h1>
-        砂の女 <spoiler>Woman in the Dunes: 1964 Japanese New Wave psychological thriller</spoiler>
+        砂の女 <Spoiler>Woman in the Dunes: 1964 Japanese New Wave psychological thriller</Spoiler>
       </h1>
 
       <p>
         Woman in the Dunes was nominated for an Oscar and is generally considered his masterpiece.
-        <spoiler>
+        <Spoiler>
           <span>(Teshighara was the first Japanese director ever nominated.)</span>
-        </spoiler>
+        </Spoiler>
         It stars <i>Eiji Okada</i>, who had come to international attention in Alain Resnais&apos;
         Hiroshima, Mon Amour. Kyoko Kishida, who plays the woman, had a long career. Teshighara used
         her several times again, and she appeared in Ozu&apos;s last film, An Autumn Afternoon
@@ -71,18 +72,18 @@ const App = () => {
         our own former curator, Donald Richie, was already shocking some Tokyo sensibilities with
         what amounted to <code>“X-rated”</code> underground films. As the critic Gudrun Howarth
         wrote,
-        <spoiler>
+        <Spoiler>
           “When the woman washing the man reacts to the touch of his skin and to the patterns of
           soap lather on his flesh, the sensual, almost tactile, participation of Teshigahara&apos;s
           camera creates one of the most <span className="inline-tag">erotic</span> love scenes ever
           photographed.”
-        </spoiler>
+        </Spoiler>
       </p>
 
       <blockquote>
         Teshigahara&apos;s breakthrough film was Pitfall, adapted by Kobe Abe from his novel, and
         the two would collaborate again on
-        <spoiler className="dark-theme">砂の女 Suna No Onna (Woman in the Dunes)</spoiler>. Abe was
+        <Spoiler className="dark-theme">砂の女 Suna No Onna (Woman in the Dunes)</Spoiler>. Abe was
         a member of the avant-garde who would be nominated several times for the Nobel Prize for
         Literature.
       </blockquote>
@@ -118,5 +119,5 @@ const App = () => {
   );
 };
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(<App />);

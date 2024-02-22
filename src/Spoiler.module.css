@@ -1,52 +1,10 @@
-.spoiler {
-  /* overriden in Spoiler */
-  --reveal-duration: 0.3s;
-  --hide-duration: 0.25s;
-
-  --tr-params: var(--reveal-duration) ease-out 0.1s;
-
-  background-clip: border-box;
-  transition: color var(--tr-params), border-color var(--tr-params),
-    text-decoration-color var(--tr-params), text-emphasis-color var(--tr-params);
-}
-
-@keyframes circleReveal {
-  0% {
-    filter: blur(8px);
-    opacity: 0;
-    mask-size: 0px 0px;
-  }
-
-  100% {
-    filter: none;
-    opacity: 1;
-    mask-size: 1000px 1000px;
-  }
-}
-
-.spoiler.hidden > * {
-  opacity: 0;
-  filter: blur(1px);
-}
-
-.spoiler:not(.hidden) > * {
-  mask-image: radial-gradient(circle closest-corner, black 0%, black 45%, transparent 50%);
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: 1000px 1000px;
-  animation: circleReveal 0.4s forwards ease-out;
-}
-
-.spoiler > * {
-  opacity: 0;
-  transition: opacity var(--tr-params), filter var(--tr-params);
-}
-
 .spoiler.hidden {
-  --tr-params: var(--hide-duration) ease-out 0s;
-
   color: transparent;
   border-color: transparent;
   text-decoration-color: transparent;
   text-emphasis-color: transparent;
+}
+
+.spoiler.hidden > * {
+  opacity: 0;
 }
