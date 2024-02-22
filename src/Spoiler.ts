@@ -36,6 +36,8 @@ const GAP_RATIO = 8.0;
 // Check if the user has requested reduced motion
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
+
 class Spoiler {
   readonly el: HTMLElement;
   maxFPS: number = DEFAULT_FPS;
@@ -235,9 +237,11 @@ declare global {
   }
 }
 
-// register paint inline worklet
-CSS.paintWorklet.addModule(
-  URL.createObjectURL(new Blob([workletSource], { type: "application/javascript" }))
-);
+if (isCSSHoudiniSupported) {
+  // register paint inline worklet
+  CSS.paintWorklet.addModule(
+    URL.createObjectURL(new Blob([workletSource], { type: "application/javascript" }))
+  );
+}
 
 export { Spoiler };
