@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 
 import { SpoilerPainter } from "../src/SpoilerPainter";
@@ -36,10 +36,25 @@ const useVanillaSpoilers = () => {
 const App = () => {
   useVanillaSpoilers();
 
+  const [timeBased, setTimeBased] = useState(false);
+
+  useEffect(() => {
+    const int = setInterval(() => {
+      setTimeBased((prev) => !prev);
+    }, 1000);
+
+    return () => {
+      clearInterval(int);
+    };
+  });
+
   return (
     <main>
       <h1>
-        砂の女 <Spoiler>Woman in the Dunes: 1964 Japanese New Wave psychological thriller</Spoiler>
+        砂の女{" "}
+        <Spoiler hidden={timeBased} className="header-text" aria-label="Woman in the Dunes">
+          Woman in the Dunes: 1964 Japanese New Wave psychological thriller
+        </Spoiler>
       </h1>
 
       <p>

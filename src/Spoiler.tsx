@@ -3,16 +3,42 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { SpoilerPainter } from "./SpoilerPainter";
 import SpoilerStyles from "./Spoiler.module.css";
 
-interface SpoilerProps {
+export type SpoilerProps = {
   children: React.ReactNode;
-}
+  defaultHidden?: boolean;
+  hidden?: boolean;
+  onChange?: (hidden: boolean) => void;
+} & Omit<JSX.IntrinsicElements["span"], "style">;
 
-export const Spoiler: React.FC<SpoilerProps> = ({ children }) => {
+const useIsHiddenState = (props: SpoilerProps) => {
+  const [isControlled] = useState(() => props.hidden !== undefined);
+  const uncontrolledState = useState(props.defaultHidden ?? true);
+
+  if (isControlled !== (props.hidden !== undefined)) {
+    throw new Error("Cannot change from controlled to uncontrolled or vice versa.");
+  }
+
+  if (isControlled) {
+    return [
+      props.hidden!, // we know that it is not `undefined` because of the useState initializer
+      (value: boolean) => {
+        // even though this doesn't apply to the controlled case, we call the callback
+        props?.onChange?.(value);
+      },
+    ];
+  }
+
+  return uncontrolledState;
+};
+
+export const Spoiler: React.FC<SpoilerProps> = (props) => {
+  const { hidden, className, children, ...restProps } = props;
+
   const firstRun = useRef(true);
   const ref = useRef<HTMLElement>(null);
   const painterRef = useRef<SpoilerPainter>();
 
-  const [isHidden, setHidden] = useState(true);
+  const [isHidden, _setIsHidden] = useIsHiddenState(props);
 
   useLayoutEffect(() => {
     if (firstRun.current) {
@@ -23,14 +49,27 @@ export const Spoiler: React.FC<SpoilerProps> = ({ children }) => {
     }
 
     return () => {
-      /* TODO detach */
+      /* TODO detach and remove firstRun */
     };
   }, []);
 
-  const clx = SpoilerStyles.spoiler + (isHidden ? ` ${SpoilerStyles.hidden}` : "");
+  useLayoutEffect(() => {
+    const painter = painterRef.current;
+
+    if (painter && hidden !== painter.isHidden) {
+      hidden ? painter.hide() : painter.reveal();
+    }
+  }, [hidden]);
+
+  const clx = [
+    SpoilerStyles.spoiler,
+    isHidden ? `${SpoilerStyles.hidden}` : "",
+    // append className provided
+    className,
+  ].join(" ");
 
   return (
-    <span ref={ref} className={clx}>
+    <span ref={ref} className={clx} {...restProps}>
       {children}
     </span>
   );
