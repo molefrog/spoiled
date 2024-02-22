@@ -12,5 +12,10 @@
     "lightningcss": "^1.23.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
+  },
+  "dependencies": {
+    "css-paint-polyfill": "^3.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
