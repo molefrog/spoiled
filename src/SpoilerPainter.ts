@@ -1,16 +1,19 @@
 import workletSource from "./worklet.js?raw";
-import scopedStyles from "./Spoiler.module.css";
+
+const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
 
 interface InitOptions {
   readonly revealed?: boolean;
 }
 
-interface SpoilerOptions {
+export interface SpoilerPainterOptions {
   readonly fps?: number;
   readonly gap?: number | boolean;
   readonly density?: number;
   readonly mimicWords?: boolean;
 }
+
+export type CtorOptions = InitOptions & SpoilerPainterOptions;
 
 interface TransitionOptions {
   readonly animate?: boolean | number;
@@ -36,15 +39,12 @@ const GAP_RATIO = 8.0;
 // Check if the user has requested reduced motion
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
-
-class Spoiler {
+class SpoilerPainter {
   readonly el: HTMLElement;
   maxFPS: number = DEFAULT_FPS;
 
-  constructor(el: HTMLElement, options: SpoilerOptions & InitOptions = {}) {
+  constructor(el: HTMLElement, options: CtorOptions = {}) {
     this.el = el;
-    this.el.classList.add(scopedStyles.spoiler);
 
     this.update(options);
 
@@ -60,7 +60,12 @@ class Spoiler {
    * `gap` - in px a gap that particles won't spawn within (ignored for elements that exceed
    *         the size limit)
    */
-  update({ fps = DEFAULT_FPS, gap = 6, mimicWords = true, density = 0.08 }: SpoilerOptions = {}) {
+  update({
+    fps = DEFAULT_FPS,
+    gap = 6,
+    mimicWords = true,
+    density = 0.08,
+  }: SpoilerPainterOptions = {}) {
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
 
@@ -115,13 +120,15 @@ class Spoiler {
     this.el.style.background = `paint(spoiler) ${repeatAndPosition} / ${ws} ${hs}`;
   }
 
-  get isHidden() {
-    return this.el.classList.contains(scopedStyles.hidden);
-  }
-
   /**
    * Hides and revelas the content. Turns the noise animation on and off.
    */
+  #isHidden: boolean = false;
+
+  get isHidden() {
+    return this.#isHidden;
+  }
+
   #_fadeDuration: number = 0.0;
 
   set #fadeDuration(value: number | null) {
@@ -140,11 +147,10 @@ class Spoiler {
   }
 
   hide({ animate }: TransitionOptions = { animate: true }) {
-    this.el.classList.add(scopedStyles.hidden);
-
     this.#fadeDuration = this.parseFadeDuration(animate);
     this.#tstop = null; // reset the stop point
     this.t = 0; // reset the clock
+    this.#isHidden = true;
 
     this.startAnimation();
   }
@@ -152,10 +158,9 @@ class Spoiler {
   reveal({ animate }: TransitionOptions = { animate: true }) {
     const duration = this.parseFadeDuration(animate);
 
-    this.el.classList.remove(scopedStyles.hidden);
-
     this.#fadeDuration = duration;
     this.#tstop = this.t;
+    this.#isHidden = false;
 
     if (duration <= 0) {
       this.stopAnimation();
@@ -244,4 +249,4 @@ if (isCSSHoudiniSupported) {
   );
 }
 
-export { Spoiler };
+export { SpoilerPainter };

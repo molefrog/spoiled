@@ -2,7 +2,7 @@ import * as React from "react";
 import { useLayoutEffect, useRef } from "react";
 import * as ReactDOM from "react-dom/client";
 
-import { Spoiler } from "../src/Spoiler";
+import { SpoilerPainter } from "../src/SpoilerPainter";
 
 import "./demo.css";
 
@@ -16,9 +16,7 @@ const useVanillaSpoilers = () => {
 
     for (const el of document.querySelectorAll(".spoiler-vanilla")) {
       if (el instanceof HTMLElement) {
-        const _accent = el.classList.contains("dark-theme") ? "rgb(200, 200, 200)" : undefined;
-
-        const spoiler = new Spoiler(el, { fps: 20 /*, accentColor: _accent */ });
+        const spoiler = new SpoilerPainter(el, { fps: 24 });
 
         el.addEventListener("click", () => {
           if (spoiler.isHidden) {
