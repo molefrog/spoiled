@@ -70,3 +70,7 @@ section {
   align-items: flex-end;
   gap: 16px;
 }
+
+h1 {
+  line-height: 1.3;
+}

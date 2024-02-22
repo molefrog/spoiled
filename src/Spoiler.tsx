@@ -7,6 +7,7 @@ export type SpoilerProps = {
   children: React.ReactNode;
   defaultHidden?: boolean;
   hidden?: boolean;
+  revealOn?: "click" | "hover";
   onChange?: (hidden: boolean) => void;
 } & Omit<JSX.IntrinsicElements["span"], "style">;
 
@@ -32,31 +33,29 @@ const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] 
 };
 
 export const Spoiler: React.FC<SpoilerProps> = (props) => {
-  const { hidden, className, children, ...restProps } = props;
+  const { revealOn, hidden, className, children, ...restProps } = props;
 
-  const firstRun = useRef(true);
   const ref = useRef<HTMLElement>(null);
   const painterRef = useRef<SpoilerPainter>();
 
   const [isHidden, _setIsHidden] = useIsHiddenState(props);
   const [isHiddenInitial] = useState(() => isHidden);
 
+  // attach a painter that will animate the background noise
   useLayoutEffect(() => {
-    if (firstRun.current) {
-      firstRun.current = false;
-
-      const spoiler = new SpoilerPainter(ref.current!, { fps: 24, hidden: isHiddenInitial });
-      painterRef.current = spoiler;
-    }
+    const spoiler = new SpoilerPainter(ref.current!, { fps: 24, hidden: isHiddenInitial });
+    painterRef.current = spoiler;
 
     return () => {
-      /* TODO detach and remove firstRun */
+      spoiler.destroy();
+      painterRef.current = undefined;
     };
   }, []);
 
   useLayoutEffect(() => {
     const painter = painterRef.current;
 
+    // value has changed
     if (painter && isHidden !== painter.isHidden) {
       isHidden ? painter.hide() : painter.reveal();
     }
@@ -65,7 +64,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const clx = [
     SpoilerStyles.spoiler,
     isHidden ? `${SpoilerStyles.hidden}` : "",
-    // append className provided
+    // append className provided above
     className,
   ].join(" ");
 

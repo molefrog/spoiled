@@ -55,6 +55,20 @@ class SpoilerPainter {
     }
   }
 
+  #destroyed = false;
+
+  /**
+   * Stops everything and reverts the styles
+   */
+  destroy() {
+    this.#destroyed = true;
+    this.stopAnimation();
+
+    ["background", "--t", "--t-stop", "--fade", "--gap", "--words", "--density"].forEach((prop) => {
+      this.el.style.removeProperty(prop);
+    });
+  }
+
   /**
    * `fps` - the maximum frames per second
    * `mimicWords` - if true, the spoiler will try to mimic the shape of words (cssvar)
@@ -68,6 +82,10 @@ class SpoilerPainter {
     mimicWords = true,
     density = 0.08,
   }: SpoilerPainterOptions = {}) {
+    if (this.#destroyed) {
+      throw new Error("Painter has been destroyed and can't be used again.");
+    }
+
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
 
@@ -200,6 +218,7 @@ class SpoilerPainter {
 
   // animation loop
   #frame = (now: DOMHighResTimeStamp) => {
+    if (this.#destroyed) return;
     const shouldStop = this.#tstop && this.t > this.#tstop + this.#fadeDuration;
 
     if (this.maxFPS > 0 && !shouldStop) {
