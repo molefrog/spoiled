@@ -8,9 +8,10 @@ import {
   ReactElement,
   ReactNode,
   isValidElement,
+  useMemo,
 } from "react";
 
-import { SpoilerPainter } from "./SpoilerPainter";
+import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
 import SpoilerStyles from "./Spoiler.module.css";
 
 type AsChildProps =
@@ -28,12 +29,20 @@ type AsChildProps =
 export type SpoilerProps = {
   defaultHidden?: boolean;
   hidden?: boolean;
-  revealOn?: "click" | "hover";
-  onChange?: (hidden: boolean) => void;
+  revealOn?: "click" | "hover" | false;
+  onHiddenChange?: (hidden: boolean) => void;
   tagName?: keyof JSX.IntrinsicElements;
 } & Omit<JSX.IntrinsicElements["span"], "style"> &
-  AsChildProps;
+  AsChildProps &
+  SpoilerPainterOptions;
 
+/**
+ * Returns the spoiler state (hidden/reveal and the setter) depending on whether
+ * the component is controlled or not (i.e. has `hidden` prop or not)
+ *
+ * @param props - the props of the Spoiler component
+ * @returns React state pair
+ */
 const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] => {
   const [isControlled] = useState(() => props.hidden !== undefined);
   const [uncontrolledVal, setUncontrolledVal] = useState(props.defaultHidden ?? true);
@@ -46,9 +55,9 @@ const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] 
     (value: boolean) => {
       if (!isControlled) setUncontrolledVal(value);
 
-      props.onChange?.(value);
+      props.onHiddenChange?.(value);
     },
-    [isControlled, props.onChange]
+    [isControlled, props.onHiddenChange]
   );
 
   if (isControlled) {
@@ -61,14 +70,46 @@ const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] 
   return [uncontrolledVal, setterFn];
 };
 
+/**
+ * Allows to controll the Spoiler's state via the `revealOn` prop.
+ * It can be either "click" or "hover", or undefined (has no effect).
+ *
+ * @returns an object with props for the target element
+ */
+const useRevealOn = (
+  revealOn: SpoilerProps["revealOn"],
+  state: [boolean, (v: boolean) => void]
+) => {
+  const [value, setValue] = state;
+
+  const handleMouseEnter = useCallback(() => setValue(false), [setValue]);
+  const handleMouseLeave = useCallback(() => setValue(true), [setValue]);
+  const handleClick = useCallback(() => setValue(!value), [value, setValue]);
+
+  const eventHandlers = useMemo(() => {
+    switch (revealOn) {
+      case "hover":
+        return { onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave };
+      case "click":
+        return { onClick: handleClick };
+      default:
+        return {};
+    }
+  }, [revealOn, handleMouseEnter, handleMouseLeave, handleClick]);
+
+  return eventHandlers;
+};
+
 export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const {
     asChild = false,
     tagName = "span",
-    revealOn,
     hidden,
+    revealOn = hidden === undefined ? "hover" : false,
+    defaultHidden,
     className,
     children,
+    onHiddenChange,
 
     ...elementProps
   } = props;
@@ -76,12 +117,21 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const ref = useRef<HTMLElement>(null);
   const painterRef = useRef<SpoilerPainter>();
 
-  const [isHidden, _setIsHidden] = useIsHiddenState(props);
+  const state = useIsHiddenState(props);
+  const [isHidden] = state;
   const [isHiddenInitial] = useState(() => isHidden);
+
+  const [painterOptionsOnInit] = useState(() => {
+    const { fps = 24, gap, density, mimicWords } = props;
+    return { fps, gap, density, mimicWords };
+  });
 
   // attach a painter that will animate the background noise
   useLayoutEffect(() => {
-    const spoiler = new SpoilerPainter(ref.current!, { fps: 24, hidden: isHiddenInitial });
+    const spoiler = new SpoilerPainter(ref.current!, {
+      ...painterOptionsOnInit,
+      hidden: isHiddenInitial,
+    });
     painterRef.current = spoiler;
 
     return () => {
@@ -109,11 +159,16 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const template =
     asChild && isValidElement(children)
       ? (children as ReactElement)
-      : createElement(tagName, { children });
+      : createElement(tagName, {
+          children,
+          "aria-expanded": !isHidden,
+          "aria-label": "spoiler alert",
+        });
 
   return cloneElement(template, {
     ref,
     className: clx,
+    ...useRevealOn(revealOn, state),
     ...elementProps,
   });
 };

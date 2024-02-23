@@ -87,7 +87,7 @@ const App = () => {
         our own former curator, Donald Richie, was already shocking some Tokyo sensibilities with
         what amounted to <code>“X-rated”</code> underground films. As the critic Gudrun Howarth
         wrote,
-        <Spoiler>
+        <Spoiler revealOn="click">
           “When the woman washing the man reacts to the touch of his skin and to the patterns of
           soap lather on his flesh, the sensual, almost tactile, participation of Teshigahara&apos;s
           camera creates one of the most <span className="inline-tag">erotic</span> love scenes ever
@@ -112,7 +112,7 @@ const App = () => {
         made several documentaries on artists like Antonio Gaudi and Jean Tinguely.
       </p>
 
-      <Spoiler tagName="div" className="img">
+      <Spoiler tagName="div" className="img" fps={8}>
         <img
           style={{ maxWidth: "100%" }}
           src="https://moma.org/wp/inside_out/wp-content/uploads/2014/02/Woman-in-the-Dunes-2.jpg"
