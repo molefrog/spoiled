@@ -4,6 +4,7 @@ const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
 
 interface InitOptions {
   readonly hidden?: boolean;
+  readonly onlyInViewport?: boolean;
 }
 
 export interface SpoilerPainterOptions {
@@ -48,6 +49,11 @@ class SpoilerPainter {
 
     this.update(options);
 
+    if (options.onlyInViewport === true) {
+      // ensure that animation isn't running when the element is not visible
+      this.#watchInViewport();
+    }
+
     if (options.hidden === undefined || options.hidden === true) {
       this.hide({ animate: false });
     } else {
@@ -67,6 +73,12 @@ class SpoilerPainter {
     ["background", "--t", "--t-stop", "--fade", "--gap", "--words", "--density"].forEach((prop) => {
       this.el.style.removeProperty(prop);
     });
+
+    // Cleanup the Intersection Observer
+    if (this.#observer) {
+      this.#observer.disconnect();
+      this.#observer = null;
+    }
   }
 
   /**
@@ -252,6 +264,30 @@ class SpoilerPainter {
 
   get isAnimating() {
     return this.#raf !== null;
+  }
+
+  #observer: IntersectionObserver | null = null;
+
+  #watchInViewport(): void {
+    if (typeof IntersectionObserver === "undefined") return;
+
+    this.#observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            this.stopAnimation();
+          } else {
+            this.startAnimation();
+          }
+        });
+      },
+      {
+        root: null, // observes the element in the viewport
+        threshold: 0.1, // trigger if 10% of the element is visible
+      }
+    );
+
+    this.#observer.observe(this.el);
   }
 }
 
