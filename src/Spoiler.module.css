@@ -50,12 +50,6 @@
   transition: mask-size 0.5s linear, opacity 0.6s ease-out;
 }
 
-@supports (syntax: "<color>") {
-  .transition.iris {
-    scale: 2;
-  }
-}
-
 .spoiler:not(.hidden) > .transition.iris {
   animation: 0s linear 0.6s 1 forwards remove-mask;
 }

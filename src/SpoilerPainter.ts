@@ -93,7 +93,7 @@ class SpoilerPainter {
   update({
     fps = DEFAULT_FPS,
     gap = 6,
-    mimicWords = true,
+    mimicWords = false,
     density = 0.08,
     accentColor,
   }: SpoilerPainterOptions = {}) {

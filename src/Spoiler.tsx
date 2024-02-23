@@ -140,15 +140,19 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     hidden,
     revealOn = hidden === undefined ? "hover" : false,
     defaultHidden,
-    className,
-    children,
     onHiddenChange,
+
+    // background noise settings
     accentColor = ["#333", "#fff"],
     theme = "light",
+    mimicWords = true,
     fps = 24,
     gap,
     density,
-    mimicWords,
+
+    // inherited props
+    className,
+    children,
 
     ...elementProps
   } = props;
