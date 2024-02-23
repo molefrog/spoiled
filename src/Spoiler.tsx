@@ -107,12 +107,13 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   ].join(" ");
 
   const template =
-    asChild && isValidElement(children) ? (children as ReactElement) : createElement(tagName, {});
+    asChild && isValidElement(children)
+      ? (children as ReactElement)
+      : createElement(tagName, { children });
 
   return cloneElement(template, {
     ref,
     className: clx,
-    children,
     ...elementProps,
   });
 };
