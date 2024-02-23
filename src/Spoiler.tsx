@@ -10,6 +10,7 @@ import {
   isValidElement,
   useMemo,
 } from "react";
+import { useMatchMedia } from "./useMatchMedia";
 
 import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
 import SpoilerStyles from "./Spoiler.module.css";
@@ -29,8 +30,10 @@ export type SpoilerProps = {
   // how spoiler content will transition on reveal/hide
   transition?: false | "none" | "fade" | "iris";
 
-  // accent color
-  accentColor?: string;
+  // accent color, e.g. "#333" or ["#333", "#fff"] for light and dark themes
+  accentColor?: string | [string, string];
+
+  theme?: "system" | "light" | "dark";
 } & Omit<JSX.IntrinsicElements["span"], "style"> &
   AsChildProps &
   SpoilerPainterOptions;
@@ -111,6 +114,24 @@ const useRevealOn = (
   return eventHandlers;
 };
 
+/**
+ * Gets the accent color for the background noise (painter) based on theme preference and
+ * custom colors (provided via `accentColor` prop).
+ *
+ * @param color - e.g. "#333" or ["#333", "#fff"]
+ * @param theme - "system" | "light" | "dark"
+ * @returns color
+ */
+const useAccentColor = (color: string | [string, string], theme: SpoilerProps["theme"]) => {
+  const systemIsDarkTheme = useMatchMedia("(prefers-color-scheme: dark)");
+  const isDarkTheme = theme === "system" ? systemIsDarkTheme : theme === "dark";
+
+  // convert from shorthand
+  const [light, dark = light] = [color].flat() as string[];
+
+  return isDarkTheme ? dark : light;
+};
+
 export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const {
     asChild = false,
@@ -122,7 +143,12 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     className,
     children,
     onHiddenChange,
-    accentColor,
+    accentColor = ["#333", "#fff"],
+    theme = "light",
+    fps = 24,
+    gap,
+    density,
+    mimicWords,
 
     ...elementProps
   } = props;
@@ -134,10 +160,13 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const [isHidden] = state;
   const [isHiddenInitial] = useState(() => isHidden);
 
-  const [painterOptionsOnInit] = useState(() => {
-    const { fps = 24, gap, density, mimicWords, accentColor = "#333" } = props;
-    return { fps, gap, density, mimicWords, accentColor };
-  });
+  const painterColor = useAccentColor(accentColor, theme);
+
+  const painterOptions = useMemo(() => {
+    return { fps, gap, density, mimicWords, accentColor: painterColor };
+  }, [fps, gap, density, mimicWords, painterColor]);
+
+  const [painterOptionsOnInit] = useState(() => painterOptions);
 
   // attach a painter that will animate the background noise
   useLayoutEffect(() => {
@@ -161,6 +190,10 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
       isHidden ? painter.hide() : painter.reveal();
     }
   }, [isHidden]);
+
+  useLayoutEffect(() => {
+    painterRef.current?.update(painterOptions);
+  }, [painterOptions]);
 
   const clx = [
     SpoilerStyles.spoiler,

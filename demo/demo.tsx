@@ -105,7 +105,7 @@ const App = () => {
           Suna No Onna (Woman in the Dunes)
         </Spoiler>
         . Abe was a member of the avant-garde who would be nominated several times for the Nobel
-        Prize for Literature.
+        Prize for <Spoiler theme="dark">Literature</Spoiler>.
       </blockquote>
 
       <p>
