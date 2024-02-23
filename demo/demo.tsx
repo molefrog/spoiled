@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom/client";
 
 import { SpoilerPainter } from "../src/SpoilerPainter";
 import { Spoiler } from "../src/Spoiler";
+import { useMatchMedia } from "../src/useMatchMedia";
 
 import "./demo.css";
 
@@ -35,6 +36,8 @@ const useVanillaSpoilers = () => {
 
 const App = () => {
   useVanillaSpoilers();
+  const reducedMotion = useMatchMedia("(prefers-reduced-motion: reduce)");
+  const isDarkScheme = useMatchMedia("(prefers-color-scheme: dark)");
 
   const [timeBased, setTimeBased] = useState(false);
 
@@ -59,7 +62,7 @@ const App = () => {
 
       <p>
         Woman in the Dunes was nominated for an Oscar and is generally considered his masterpiece.
-        <Spoiler>
+        <Spoiler density={0.2}>
           <span>(Teshighara was the first Japanese director ever nominated)</span>
         </Spoiler>
         . It stars <i>Eiji Okada</i>, who had come to international attention in Alain Resnais&apos;
@@ -132,6 +135,14 @@ const App = () => {
         <div className="spoiler-vanilla block" style={{ width: "96px" }}></div>
         <div className="spoiler-vanilla block" style={{ width: "320px" }}></div>
       </div>
+
+      <p>
+        <small>
+          Prefers reduced motion: <code>{String(reducedMotion)}</code>
+          <br />
+          Prefers color scheme: <code>{isDarkScheme ? "dark" : "light"}</code>
+        </small>
+      </p>
     </main>
   );
 };
