@@ -1,39 +1,77 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import {
+  createElement,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+  cloneElement,
+  ReactElement,
+  ReactNode,
+  isValidElement,
+} from "react";
 
 import { SpoilerPainter } from "./SpoilerPainter";
 import SpoilerStyles from "./Spoiler.module.css";
 
+type AsChildProps =
+  | {
+      // only single React elements can be composed via `asChild` prop
+      children: ReactElement;
+      asChild: true;
+    }
+  | {
+      // anything
+      children: ReactNode;
+      asChild?: false;
+    };
+
 export type SpoilerProps = {
-  children: React.ReactNode;
   defaultHidden?: boolean;
   hidden?: boolean;
   revealOn?: "click" | "hover";
   onChange?: (hidden: boolean) => void;
-} & Omit<JSX.IntrinsicElements["span"], "style">;
+  tagName?: keyof JSX.IntrinsicElements;
+} & Omit<JSX.IntrinsicElements["span"], "style"> &
+  AsChildProps;
 
 const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] => {
   const [isControlled] = useState(() => props.hidden !== undefined);
-  const uncontrolledState = useState(props.defaultHidden ?? true);
+  const [uncontrolledVal, setUncontrolledVal] = useState(props.defaultHidden ?? true);
 
   if (isControlled !== (props.hidden !== undefined)) {
     throw new Error("Cannot change from controlled to uncontrolled or vice versa.");
   }
 
+  const setterFn = useCallback(
+    (value: boolean) => {
+      if (!isControlled) setUncontrolledVal(value);
+
+      props.onChange?.(value);
+    },
+    [isControlled, props.onChange]
+  );
+
   if (isControlled) {
     return [
       props.hidden!, // we know that it is not `undefined` because of the useState initializer
-      (value) => {
-        // even though this doesn't apply to the controlled case, we call the callback
-        props?.onChange?.(value);
-      },
+      setterFn,
     ];
   }
 
-  return uncontrolledState;
+  return [uncontrolledVal, setterFn];
 };
 
 export const Spoiler: React.FC<SpoilerProps> = (props) => {
-  const { revealOn, hidden, className, children, ...restProps } = props;
+  const {
+    asChild = false,
+    tagName = "span",
+    revealOn,
+    hidden,
+    className,
+    children,
+
+    ...elementProps
+  } = props;
 
   const ref = useRef<HTMLElement>(null);
   const painterRef = useRef<SpoilerPainter>();
@@ -68,9 +106,13 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     className,
   ].join(" ");
 
-  return (
-    <span ref={ref} className={clx} {...restProps}>
-      {children}
-    </span>
-  );
+  const template =
+    asChild && isValidElement(children) ? (children as ReactElement) : createElement(tagName, {});
+
+  return cloneElement(template, {
+    ref,
+    className: clx,
+    children,
+    ...elementProps,
+  });
 };

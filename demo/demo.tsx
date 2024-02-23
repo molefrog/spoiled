@@ -95,13 +95,15 @@ const App = () => {
         </Spoiler>
       </p>
 
-      <blockquote>
-        Teshigahara&apos;s breakthrough film was Pitfall, adapted by Kobe Abe from his novel, and
-        the two would collaborate again on
-        <Spoiler className="dark-theme">砂の女 Suna No Onna (Woman in the Dunes)</Spoiler>. Abe was
-        a member of the avant-garde who would be nominated several times for the Nobel Prize for
-        Literature.
-      </blockquote>
+      <Spoiler asChild>
+        <blockquote>
+          Teshigahara&apos;s breakthrough film was Pitfall, adapted by Kobe Abe from his novel, and
+          the two would collaborate again on
+          <Spoiler className="dark-theme">砂の女 Suna No Onna (Woman in the Dunes)</Spoiler>. Abe
+          was a member of the avant-garde who would be nominated several times for the Nobel Prize
+          for Literature.
+        </blockquote>
+      </Spoiler>
 
       <p>
         Teshigahara was a highly diversified member of the avant-garde arts community, a painter and
@@ -110,13 +112,13 @@ const App = () => {
         made several documentaries on artists like Antonio Gaudi and Jean Tinguely.
       </p>
 
-      <div className="img">
+      <Spoiler tagName="div" className="img">
         <img
           style={{ maxWidth: "100%" }}
           src="https://moma.org/wp/inside_out/wp-content/uploads/2014/02/Woman-in-the-Dunes-2.jpg"
           alt="The Merge"
         />
-      </div>
+      </Spoiler>
 
       <p>
         Hiroshi Teshigahara (January 28, 1927 – April 14, 2001) was an avant-garde Japanese
