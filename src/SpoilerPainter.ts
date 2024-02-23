@@ -1,3 +1,4 @@
+import { colord } from "colord";
 import workletSource from "./worklet.js?raw";
 
 const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
@@ -12,6 +13,7 @@ export interface SpoilerPainterOptions {
   readonly gap?: number | boolean;
   readonly density?: number;
   readonly mimicWords?: boolean;
+  readonly accentColor?: string;
 }
 
 export type CtorOptions = InitOptions & SpoilerPainterOptions;
@@ -93,6 +95,7 @@ class SpoilerPainter {
     gap = 6,
     mimicWords = true,
     density = 0.08,
+    accentColor,
   }: SpoilerPainterOptions = {}) {
     if (this.#destroyed) {
       throw new Error("Painter has been destroyed and can't be used again.");
@@ -141,6 +144,13 @@ class SpoilerPainter {
 
     this.el.style.setProperty("--words", String(mimicWords));
     this.el.style.setProperty("--density", String(density));
+
+    if (accentColor) {
+      const hsl = colord(accentColor).toHsl();
+      this.el.style.setProperty("--accent", `${hsl.h}deg ${hsl.s}% ${hsl.l}%`);
+    } else {
+      this.el.style.removeProperty("--accent");
+    }
   }
 
   useBackgroundStyle(ws: string | number, hs: string | number, options?: { tile: boolean }) {

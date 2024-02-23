@@ -28,6 +28,9 @@ export type SpoilerProps = {
 
   // how spoiler content will transition on reveal/hide
   transition?: false | "none" | "fade" | "iris";
+
+  // accent color
+  accentColor?: string;
 } & Omit<JSX.IntrinsicElements["span"], "style"> &
   AsChildProps &
   SpoilerPainterOptions;
@@ -119,6 +122,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     className,
     children,
     onHiddenChange,
+    accentColor,
 
     ...elementProps
   } = props;
@@ -131,8 +135,8 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const [isHiddenInitial] = useState(() => isHidden);
 
   const [painterOptionsOnInit] = useState(() => {
-    const { fps = 24, gap, density, mimicWords } = props;
-    return { fps, gap, density, mimicWords };
+    const { fps = 24, gap, density, mimicWords, accentColor = "#333" } = props;
+    return { fps, gap, density, mimicWords, accentColor };
   });
 
   // attach a painter that will animate the background noise

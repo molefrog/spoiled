@@ -70,7 +70,7 @@ class SpoilerPainter {
       // painting from worklets, so 1px stands for 1px on the screen
       dprx = _IS_WORKLET ? 1.0 : devicePixelRatio,
       // hsl format
-      accent = (getCSSVar(props, "--accent") || "0 0% 70%").split(" "),
+      accent = (getCSSVar(props, "--accent") || "0 0% 0%").split(" "), // default: black
       mimicWords = getCSSVar(props, "--words") === "true",
       frict = 0,
       vmin = 2,
@@ -121,7 +121,8 @@ class SpoilerPainter {
         size0 = rand(1.0, 1.0 + sizedev);
 
       const _l = parseInt(accent[2]);
-      const lightness = M.floor(lerp(_l * 0.5, _l, rand()));
+      const ldir = _l > 50 ? -1 : 1; // light or dark
+      const lightness = M.floor(clamp(0, _l + ldir * rand(0, 30), 100));
 
       const v0 = pol2vec(v0mag, rand(0, M.PI * 2));
       const [vx0norm, vy0norm] = vecnorm(v0);

@@ -95,15 +95,15 @@ const App = () => {
         </Spoiler>
       </p>
 
-      <Spoiler asChild>
-        <blockquote>
-          Teshigahara&apos;s breakthrough film was Pitfall, adapted by Kobe Abe from his novel, and
-          the two would collaborate again on
-          <Spoiler className="dark-theme">砂の女 Suna No Onna (Woman in the Dunes)</Spoiler>. Abe
-          was a member of the avant-garde who would be nominated several times for the Nobel Prize
-          for Literature.
-        </blockquote>
-      </Spoiler>
+      <blockquote>
+        Teshigahara&apos;s breakthrough film was{" "}
+        <Spoiler accentColor="#FDFF44">
+          Pitfall, adapted by Kobe Abe from his novel, and the two would collaborate again on 砂の女
+          Suna No Onna (Woman in the Dunes)
+        </Spoiler>
+        . Abe was a member of the avant-garde who would be nominated several times for the Nobel
+        Prize for Literature.
+      </blockquote>
 
       <p>
         Teshigahara was a highly diversified member of the avant-garde arts community, a painter and
