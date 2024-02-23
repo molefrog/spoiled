@@ -1,6 +1,7 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { Spoiler } from "./Spoiler";
 
@@ -43,5 +44,43 @@ describe("wrapper element customization", () => {
 
     expect(getByLabelText("hello")).toBeInTheDocument();
     expect(getByLabelText("hello").tagName).toBe("BLOCKQUOTE");
+  });
+});
+
+describe("controlled/uncontrolled Spoiler Component", () => {
+  it("calls onHiddenChange with false when clicked (default is hidden)", async () => {
+    const changeHandler = vi.fn();
+    const { getByText } = render(
+      <Spoiler revealOn="click" onHiddenChange={changeHandler}>
+        Click me
+      </Spoiler>
+    );
+    await userEvent.click(getByText("Click me"));
+    await waitFor(() => expect(changeHandler).toHaveBeenCalledWith(false));
+  });
+
+  it("calls onChange with true when clicked (defaultHidden is false)", async () => {
+    const changeHandler = vi.fn();
+    const { getByText } = render(
+      <Spoiler revealOn="click" defaultHidden={false} onHiddenChange={changeHandler}>
+        Click me
+      </Spoiler>
+    );
+    await userEvent.click(getByText("Click me"));
+    await waitFor(() => expect(changeHandler).toHaveBeenCalledWith(true));
+  });
+
+  it("renders with aria-hidden=true when hidden is true", () => {
+    const { getByText } = render(<Spoiler hidden={true}>Always hidden</Spoiler>);
+    expect(getByText("Always hidden")).toHaveAttribute("aria-expanded", "false");
+  });
+});
+
+describe("Spoiler options", () => {
+  it("accepts custom spoiler painter options", () => {
+    <Spoiler fps={1}>Hey</Spoiler>;
+
+    // @ts-expect-error unknown option
+    <Spoiler painterShouldExplode="1">Hey</Spoiler>;
   });
 });
