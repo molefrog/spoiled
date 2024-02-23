@@ -112,7 +112,7 @@ const App = () => {
         made several documentaries on artists like Antonio Gaudi and Jean Tinguely.
       </p>
 
-      <Spoiler tagName="div" className="img" fps={8}>
+      <Spoiler tagName="div" className="img" fps={20} revealOn="hover" transition="none">
         <img
           style={{ maxWidth: "100%" }}
           src="https://moma.org/wp/inside_out/wp-content/uploads/2014/02/Woman-in-the-Dunes-2.jpg"

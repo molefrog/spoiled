@@ -14,6 +14,24 @@ import {
 import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
 import SpoilerStyles from "./Spoiler.module.css";
 
+export type SpoilerProps = {
+  // control spoiler state from the parent
+  hidden?: boolean;
+
+  // for uncontrolled components only
+  defaultHidden?: boolean;
+  revealOn?: "click" | "hover" | false;
+  onHiddenChange?: (hidden: boolean) => void;
+
+  // customize the tag of the wrapper element
+  tagName?: keyof JSX.IntrinsicElements;
+
+  // how spoiler content will transition on reveal/hide
+  transition?: false | "none" | "fade" | "iris";
+} & Omit<JSX.IntrinsicElements["span"], "style"> &
+  AsChildProps &
+  SpoilerPainterOptions;
+
 type AsChildProps =
   | {
       // only single React elements can be composed via `asChild` prop
@@ -25,16 +43,6 @@ type AsChildProps =
       children: ReactNode;
       asChild?: false;
     };
-
-export type SpoilerProps = {
-  defaultHidden?: boolean;
-  hidden?: boolean;
-  revealOn?: "click" | "hover" | false;
-  onHiddenChange?: (hidden: boolean) => void;
-  tagName?: keyof JSX.IntrinsicElements;
-} & Omit<JSX.IntrinsicElements["span"], "style"> &
-  AsChildProps &
-  SpoilerPainterOptions;
 
 /**
  * Returns the spoiler state (hidden/reveal and the setter) depending on whether
@@ -104,6 +112,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const {
     asChild = false,
     tagName = "span",
+    transition = "iris",
     hidden,
     revealOn = hidden === undefined ? "hover" : false,
     defaultHidden,
@@ -156,11 +165,21 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     className,
   ].join(" ");
 
+  let withTransition = children; // no transition, no inner element
+
+  // when transition is used, we have to wrap the children with a transition element
+  if (transition === "fade" || transition === "iris") {
+    withTransition = createElement(tagName, {
+      className: `${SpoilerStyles.transition} ${SpoilerStyles[transition]}`,
+      children,
+    });
+  }
+
   const template =
     asChild && isValidElement(children)
       ? (children as ReactElement)
       : createElement(tagName, {
-          children,
+          children: withTransition,
           "aria-expanded": !isHidden,
           "aria-label": "spoiler alert",
         });
