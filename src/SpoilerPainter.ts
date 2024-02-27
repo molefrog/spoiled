@@ -35,7 +35,7 @@ const BLOCK_MAX_TILE = 293; // prime
  */
 const INLINE_MAX_TILE = 333; // prime
 
-const DEFAULT_FADE_DURATION = 0.75; // in seconds
+const DEFAULT_FADE_DURATION = 1.5; // in seconds
 
 const GAP_RATIO = 8.0;
 
