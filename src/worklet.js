@@ -8,8 +8,6 @@ const lcgrand =
     (M.abs(b - a) * (M.imul(48271, (seed = M.imul(214013, seed) + 2531011)) & 0x7fffffff)) /
       0x7fffffff;
 
-const lerp = (a, b, t) => a + (b - a) * t;
-
 // vector utils
 const pol2vec = (l, a = 0) => [l * M.cos(a), l * M.sin(a)];
 const vecmag = ([x, y]) => M.sqrt(x * x + y * y);
@@ -46,10 +44,12 @@ const cycleBounds = ([x, y], [w, h], r) => {
 
 const getCSSVar = (props, name) => {
   const val = props.get(name);
+
+  if (typeof val === "string") return val;
   return val?.length >= 1 ? val[0] : undefined;
 };
 
-class SpoilerPainter {
+class SpoilerPainterWorklet {
   static get contextOptions() {
     return { alpha: true };
   }
@@ -259,5 +259,5 @@ const makeWordDistribution = (line, em, space) => {
   };
 };
 
-export { SpoilerPainter };
-if (_IS_WORKLET) registerPaint("spoiler", SpoilerPainter);
+export { SpoilerPainterWorklet };
+if (_IS_WORKLET) registerPaint("spoiler", SpoilerPainterWorklet);
