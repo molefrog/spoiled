@@ -1,7 +1,6 @@
 import {
   createElement,
   useCallback,
-  useLayoutEffect,
   useRef,
   useState,
   cloneElement,
@@ -10,7 +9,9 @@ import {
   isValidElement,
   useMemo,
 } from "react";
-import { useMatchMedia } from "./useMatchMedia";
+
+import { useMatchMedia } from "./hooks/useMatchMedia";
+import { useIsomorphicLayoutEffect } from "./hooks/useIsomorphicLayoutEffect";
 
 import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
 import SpoilerStyles from "./Spoiler.module.css";
@@ -173,7 +174,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const [painterOptionsOnInit] = useState(() => painterOptions);
 
   // attach a painter that will animate the background noise
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const spoiler = new SpoilerPainter(ref.current!, {
       ...painterOptionsOnInit,
       hidden: isHiddenInitial,
@@ -186,7 +187,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     };
   }, []);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const painter = painterRef.current;
 
     // value has changed
@@ -195,7 +196,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     }
   }, [isHidden]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     painterRef.current?.update(painterOptions);
   }, [painterOptions]);
 

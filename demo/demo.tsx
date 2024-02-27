@@ -4,7 +4,7 @@ import * as ReactDOM from "react-dom/client";
 
 import { SpoilerPainter } from "../src/SpoilerPainter";
 import { Spoiler } from "../src/Spoiler";
-import { useMatchMedia } from "../src/useMatchMedia";
+import { useMatchMedia } from "../src/hooks/useMatchMedia";
 
 import "./demo.css";
 
