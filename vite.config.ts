@@ -10,6 +10,7 @@ const buildLibraryConfig: UserConfig = {
   plugins: [dts()],
 
   build: {
+    outDir: "esm",
     lib: {
       entry: "src/Spoiler.tsx",
       formats: ["es"],
