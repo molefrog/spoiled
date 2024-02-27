@@ -35,9 +35,11 @@ export type SpoilerProps = {
   accentColor?: string | [string, string];
 
   theme?: "system" | "light" | "dark";
+
+  noiseFadeDuration?: number;
 } & Omit<JSX.IntrinsicElements["span"], "style"> &
   AsChildProps &
-  SpoilerPainterOptions;
+  Omit<SpoilerPainterOptions, "accentColor">;
 
 type AsChildProps =
   | {
@@ -150,6 +152,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     fps = 24,
     gap,
     density,
+    noiseFadeDuration,
 
     // inherited props
     className,
@@ -166,6 +169,10 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const [isHiddenInitial] = useState(() => isHidden);
 
   const painterColor = useAccentColor(accentColor, theme);
+
+  // save latest value of `noiseFadeDuration` to be used in the effect below
+  const fadeDuration = useRef(noiseFadeDuration);
+  fadeDuration.current = noiseFadeDuration;
 
   const painterOptions = useMemo(() => {
     return { fps, gap, density, mimicWords, accentColor: painterColor };
@@ -189,10 +196,11 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
 
   useIsomorphicLayoutEffect(() => {
     const painter = painterRef.current;
+    const options = fadeDuration.current ? { animate: fadeDuration.current } : {};
 
     // value has changed
     if (painter && isHidden !== painter.isHidden) {
-      isHidden ? painter.hide() : painter.reveal();
+      isHidden ? painter.hide(options) : painter.reveal(options);
     }
   }, [isHidden]);
 

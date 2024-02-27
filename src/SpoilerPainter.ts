@@ -188,7 +188,7 @@ class SpoilerPainter {
     return duration;
   }
 
-  hide({ animate }: TransitionOptions = { animate: true }) {
+  hide({ animate = true }: TransitionOptions = {}) {
     this.#fadeDuration = this.parseFadeDuration(animate);
     this.#tstop = null; // reset the stop point
     this.t = 0; // reset the clock
@@ -197,7 +197,7 @@ class SpoilerPainter {
     this.startAnimation();
   }
 
-  reveal({ animate }: TransitionOptions = { animate: true }) {
+  reveal({ animate = true }: TransitionOptions = {}) {
     const duration = this.parseFadeDuration(animate);
 
     this.#fadeDuration = duration;

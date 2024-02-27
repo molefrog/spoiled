@@ -55,7 +55,12 @@ const App = () => {
     <main>
       <h1>
         砂の女{" "}
-        <Spoiler hidden={timeBased} className="header-text" aria-label="Woman in the Dunes">
+        <Spoiler
+          hidden={timeBased}
+          noiseFadeDuration={2}
+          className="header-text"
+          aria-label="Woman in the Dunes"
+        >
           Woman in the Dunes: 1964 Japanese New Wave psychological thriller
         </Spoiler>
       </h1>
