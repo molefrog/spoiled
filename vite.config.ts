@@ -1,19 +1,45 @@
 /// <reference types="vitest" />
 
-import { defineConfig } from "vite";
+import { UserConfig, defineConfig, mergeConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import dts from "vite-plugin-dts";
 
-// https://vitejs.dev/config/
-export default defineConfig({
+const buildLibraryConfig: UserConfig = {
+  root: ".",
+
+  plugins: [dts()],
+
+  build: {
+    lib: {
+      entry: "src/Spoiler.tsx",
+      formats: ["es"],
+      fileName: "spoiled",
+    },
+    rollupOptions: {
+      external: ["react"],
+    },
+  },
+};
+
+const devConfig: UserConfig = {
+  root: "demo",
+
+  css: {
+    transformer: "lightningcss",
+  },
+
   test: {
     root: "src",
     environment: "happy-dom",
   },
 
   plugins: [react()],
+};
 
-  root: "demo",
-  css: {
-    transformer: "lightningcss",
-  },
+export default defineConfig((configEnv) => {
+  if (process.env.BUNDLE_LIBRARY) {
+    return mergeConfig(devConfig, buildLibraryConfig);
+  }
+
+  return devConfig;
 });
