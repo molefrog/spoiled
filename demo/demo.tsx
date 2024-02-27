@@ -59,7 +59,6 @@ const App = () => {
           Woman in the Dunes: 1964 Japanese New Wave psychological thriller
         </Spoiler>
       </h1>
-
       <p>
         Woman in the Dunes was nominated for an Oscar and is generally considered his masterpiece.
         <Spoiler density={0.2}>
@@ -70,21 +69,21 @@ const App = () => {
         her several times again, and she appeared in Ozu&apos;s last film, An Autumn Afternoon
         (which will be shown again in our Auteurist Reprise series on May 26).
       </p>
+      <div className="images">
+        <div className="img">
+          <img
+            src="https://image.tmdb.org/t/p/original/f0JpsMQ9oEjKBD66Ky3qK3z7LGT.jpg"
+            alt="Movie poster"
+          />
+        </div>
 
-      <div className="img" style={{ maxWidth: "20%" }}>
-        <img
-          src="https://m.media-amazon.com/images/M/MV5BMTMzMzUzMDcwNV5BMl5BanBnXkFtZTcwMzM3MDMwNw@@._V1_.jpg"
-          alt="The Merge"
-        />
+        <div className="img">
+          <img
+            src="https://m.media-amazon.com/images/M/MV5BMTMzMzUzMDcwNV5BMl5BanBnXkFtZTcwMzM3MDMwNw@@._V1_.jpg"
+            alt="The Merge"
+          />
+        </div>
       </div>
-
-      <div className="img" style={{ maxWidth: "50%" }}>
-        <img
-          src="https://m.media-amazon.com/images/M/MV5BMTMzMzUzMDcwNV5BMl5BanBnXkFtZTcwMzM3MDMwNw@@._V1_.jpg"
-          alt="The Merge"
-        />
-      </div>
-
       <p>
         The eroticism and nudity was very un-Japanese for mainstream cinema of the period, although
         our own former curator, Donald Richie, was already shocking some Tokyo sensibilities with
@@ -97,24 +96,21 @@ const App = () => {
           photographed.”
         </Spoiler>
       </p>
-
       <blockquote>
         Teshigahara&apos;s breakthrough film was{" "}
-        <Spoiler accentColor="#FDFF44">
+        <Spoiler accentColor="#fe8294">
           Pitfall, adapted by Kobe Abe from his novel, and the two would collaborate again on 砂の女
           Suna No Onna (Woman in the Dunes)
         </Spoiler>
         . Abe was a member of the avant-garde who would be nominated several times for the Nobel
         Prize for <Spoiler theme="dark">Literature</Spoiler>.
       </blockquote>
-
       <p>
         Teshigahara was a highly diversified member of the avant-garde arts community, a painter and
         sculptor as well as a filmmaker, and he was also skilled in ikebana (Japanese flower
         arrangement), of which his father had been a grand master. In the course of his career, he
         made several documentaries on artists like Antonio Gaudi and Jean Tinguely.
       </p>
-
       <Spoiler tagName="div" className="img" fps={20} revealOn="hover" transition="none">
         <img
           style={{ maxWidth: "100%" }}
@@ -122,12 +118,11 @@ const App = () => {
           alt="The Merge"
         />
       </Spoiler>
-
       <p>
         Hiroshi Teshigahara (January 28, 1927 – April 14, 2001) was an avant-garde Japanese
         filmmaker.
       </p>
-
+      <hr /> <br />
       <div className="increasing-block">
         <div className="spoiler-vanilla block" style={{ width: "16px" }}></div>
         <div className="spoiler-vanilla block" style={{ width: "32px" }}></div>
@@ -135,7 +130,6 @@ const App = () => {
         <div className="spoiler-vanilla block" style={{ width: "96px" }}></div>
         <div className="spoiler-vanilla block" style={{ width: "320px" }}></div>
       </div>
-
       <p>
         <small>
           Prefers reduced motion: <code>{String(reducedMotion)}</code>

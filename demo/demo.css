@@ -1,5 +1,13 @@
 body {
   font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #151315;
+    color: #fcfcfc;
+  }
 }
 
 main {
@@ -24,11 +32,20 @@ main .img {
 blockquote {
   margin: 0;
   padding: 0 1em;
-  color: #ba737d;
+  color: #fe8294;
+  box-shadow: 0px 0px 0px 1px #292929;
+  border-radius: 3px;
   border-left: 0.25em solid #dfe2e5;
-  background: #011627;
-  font-size: 18px;
-  padding: 24px;
+  background: #1d1d1d;
+  font-size: 20px;
+  padding: 32px 24px;
+}
+
+@media (prefers-color-scheme: light) {
+  blockquote {
+    box-shadow: none;
+    border-left: none;
+  }
 }
 
 section {
@@ -69,6 +86,18 @@ section {
   display: flex;
   align-items: flex-end;
   gap: 16px;
+}
+
+.images {
+  display: flex;
+  gap: 8px;
+  margin: 24px 0px;
+}
+
+.images div > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 h1 {

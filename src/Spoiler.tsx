@@ -144,7 +144,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
 
     // background noise settings
     accentColor = ["#333", "#fff"],
-    theme = "light",
+    theme = "system",
     mimicWords = true,
     fps = 24,
     gap,
