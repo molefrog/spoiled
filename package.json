@@ -8,6 +8,11 @@
     ".": "./esm/spoiled.js"
   },
   "types": "esm/Spoiler.d.ts",
+  "files": [
+    "esm",
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
