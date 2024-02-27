@@ -53,7 +53,7 @@ class SpoilerPainter {
 
     if (options.onlyInViewport === true) {
       // ensure that animation isn't running when the element is not visible
-      this.#watchInViewport();
+      this.watchInViewport();
     }
 
     if (options.hidden === undefined || options.hidden === true) {
@@ -63,13 +63,13 @@ class SpoilerPainter {
     }
   }
 
-  #destroyed = false;
+  private wasDestroyed: boolean = false;
 
   /**
    * Stops everything and reverts the styles
    */
   destroy() {
-    this.#destroyed = true;
+    this.wasDestroyed = true;
     this.stopAnimation();
 
     ["background", "--t", "--t-stop", "--fade", "--gap", "--words", "--density"].forEach((prop) => {
@@ -77,9 +77,9 @@ class SpoilerPainter {
     });
 
     // Cleanup the Intersection Observer
-    if (this.#observer) {
-      this.#observer.disconnect();
-      this.#observer = null;
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
     }
   }
 
@@ -97,7 +97,7 @@ class SpoilerPainter {
     density = 0.08,
     accentColor,
   }: SpoilerPainterOptions = {}) {
-    if (this.#destroyed) {
+    if (this.wasDestroyed) {
       throw new Error("Painter has been destroyed and can't be used again.");
     }
 
@@ -153,7 +153,11 @@ class SpoilerPainter {
     }
   }
 
-  useBackgroundStyle(ws: string | number, hs: string | number, options?: { tile: boolean }) {
+  private useBackgroundStyle(
+    ws: string | number,
+    hs: string | number,
+    options?: { tile: boolean }
+  ) {
     ws = typeof ws === "number" ? `${ws}px` : ws;
     hs = typeof hs === "number" ? `${hs}px` : hs;
 
@@ -163,22 +167,23 @@ class SpoilerPainter {
   }
 
   /**
-   * Hides and revelas the content. Turns the noise animation on and off.
+   * Hides and reveals the content. Turns the noise animation on and off.
    */
-  #isHidden: boolean = false;
+  private _isHidden: boolean = false;
 
+  // public accessor
   get isHidden() {
-    return this.#isHidden;
+    return this._isHidden;
   }
 
-  #_fadeDuration: number = 0.0;
+  private _fadeDuration: number = 0.0;
 
-  set #fadeDuration(value: number | null) {
-    this.el.style.setProperty("--fade", `${(this.#_fadeDuration = Number(value))}s`);
+  private set fadeDuration(value: number | null) {
+    this.el.style.setProperty("--fade", `${(this._fadeDuration = Number(value))}s`);
   }
 
-  get #fadeDuration(): number {
-    return this.#_fadeDuration;
+  private get fadeDuration(): number {
+    return this._fadeDuration;
   }
 
   parseFadeDuration(value: number | boolean | undefined) {
@@ -189,10 +194,10 @@ class SpoilerPainter {
   }
 
   hide({ animate }: TransitionOptions = { animate: true }) {
-    this.#fadeDuration = this.parseFadeDuration(animate);
-    this.#tstop = null; // reset the stop point
+    this.fadeDuration = this.parseFadeDuration(animate);
+    this.tstop = null; // reset the stop point
     this.t = 0; // reset the clock
-    this.#isHidden = true;
+    this._isHidden = true;
 
     this.startAnimation();
   }
@@ -200,9 +205,9 @@ class SpoilerPainter {
   reveal({ animate }: TransitionOptions = { animate: true }) {
     const duration = this.parseFadeDuration(animate);
 
-    this.#fadeDuration = duration;
-    this.#tstop = this.t;
-    this.#isHidden = false;
+    this.fadeDuration = duration;
+    this.tstop = this.t;
+    this._isHidden = false;
 
     if (duration <= 0) {
       this.stopAnimation();
@@ -212,16 +217,16 @@ class SpoilerPainter {
   /**
    * Clock states
    */
-  #_t = 0.0;
-  #t0 = 0.0;
-  #_tstop: number | null = null;
+  private _t = 0.0;
+  private _tstop: number | null = null;
+  private t0 = 0.0;
 
-  get #tstop(): number | null {
-    return this.#_tstop;
+  get tstop(): number | null {
+    return this._tstop;
   }
 
-  set #tstop(value: number | null) {
-    this.#_tstop = value;
+  set tstop(value: number | null) {
+    this._tstop = value;
     if (value !== null) {
       this.el.style.setProperty("--t-stop", value.toFixed(3)); // 1ms precision
     } else {
@@ -230,58 +235,58 @@ class SpoilerPainter {
   }
 
   get t() {
-    return this.#_t;
+    return this._t;
   }
 
   set t(value: number) {
-    this.#_t = value;
+    this._t = value;
     this.el.style.setProperty("--t", value.toFixed(3)); // 1ms precision
   }
 
   // animation loop
-  #frame = (now: DOMHighResTimeStamp) => {
-    if (this.#destroyed) return;
-    const shouldStop = this.#tstop && this.t > this.#tstop + this.#fadeDuration;
+  private frame = (now: DOMHighResTimeStamp) => {
+    if (this.wasDestroyed) return;
+    const shouldStop = this.tstop && this.t > this.tstop + this.fadeDuration;
 
     if (this.maxFPS > 0 && !shouldStop) {
-      this.#raf = requestAnimationFrame(this.#frame);
+      this.raf = requestAnimationFrame(this.frame);
     }
 
-    const dt = now - this.#t0;
+    const dt = now - this.t0;
 
     // don't skip the first frame (dt = 0)
     if (dt > 0 && dt < 1000 / this.maxFPS) return; // skip frames to limit fps
 
     this.t += dt / 1000; // in seconds
-    this.#t0 = now;
+    this.t0 = now;
   };
 
   /** Animation state */
 
-  #raf: ReturnType<typeof requestAnimationFrame> | null = null;
+  private raf: ReturnType<typeof requestAnimationFrame> | null = null;
 
   startAnimation() {
-    this.#t0 = performance.now();
-    this.#frame(this.#t0);
+    this.t0 = performance.now();
+    this.frame(this.t0);
   }
 
   stopAnimation() {
-    if (this.#raf) {
-      cancelAnimationFrame(this.#raf);
-      this.#raf = null;
+    if (this.raf) {
+      cancelAnimationFrame(this.raf);
+      this.raf = null;
     }
   }
 
   get isAnimating() {
-    return this.#raf !== null;
+    return this.raf !== null;
   }
 
-  #observer: IntersectionObserver | null = null;
+  private observer: IntersectionObserver | null = null;
 
-  #watchInViewport(): void {
+  private watchInViewport(): void {
     if (typeof IntersectionObserver === "undefined") return;
 
-    this.#observer = new IntersectionObserver(
+    this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) {
@@ -297,7 +302,7 @@ class SpoilerPainter {
       }
     );
 
-    this.#observer.observe(this.el);
+    this.observer.observe(this.el);
   }
 }
 
