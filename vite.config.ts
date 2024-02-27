@@ -33,6 +33,10 @@ const devConfig: UserConfig = {
     environment: "happy-dom",
   },
 
+  build: {
+    target: "es2022",
+  },
+
   plugins: [react()],
 };
 
