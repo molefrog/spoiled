@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
-const supportsMatchMedia = "matchMedia" in window;
+const supportsMatchMedia = "matchMedia" in globalThis;
 
 /**
  * This hook calls `matchMedia` and updates when its value changes
  */
 export function useMatchMedia(query: string, ssrValue: boolean = false): boolean {
   const mediaQueryList = useMemo(
-    () => (supportsMatchMedia ? window.matchMedia(query) : undefined),
+    () => (supportsMatchMedia ? globalThis.matchMedia(query) : undefined),
     [query]
   );
 

@@ -86,7 +86,7 @@ const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] 
 };
 
 /**
- * Allows to controll the Spoiler's state via the `revealOn` prop.
+ * Allows to control the Spoiler's state via the `revealOn` prop.
  * It can be either "click" or "hover", or undefined (has no effect).
  *
  * @returns an object with props for the target element

@@ -40,7 +40,7 @@ const DEFAULT_FADE_DURATION = 0.75; // in seconds
 const GAP_RATIO = 8.0;
 
 // Check if the user has requested reduced motion
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const prefersReducedMotion = globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 class SpoilerPainter {
   readonly el: HTMLElement;
