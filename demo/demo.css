@@ -103,3 +103,24 @@ section {
 h1 {
   line-height: 1.3;
 }
+
+.placeholder {
+  margin: 64px 0;
+}
+
+.placeholder canvas {
+  border: 1px solid blue;
+}
+
+.placeholder .result {
+  --gif: white;
+  --w: 8px;
+  width: 162px;
+  height: 113px;
+  background: repeat top left / 32px auto
+      linear-gradient(to left, transparent 95%, rgba(0, 0, 255, 0.5) 100%),
+    repeat top left / auto 32px linear-gradient(to top, transparent 95%, rgba(255, 0, 0, 0.5) 100%),
+    repeat top left / var(--w) var(--w) var(--gif);
+
+  background: repeat top left / var(--w) var(--w) var(--gif);
+}

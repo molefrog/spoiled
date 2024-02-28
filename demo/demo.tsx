@@ -5,6 +5,7 @@ import * as ReactDOM from "react-dom/client";
 import { SpoilerPainter } from "../src/SpoilerPainter";
 import { Spoiler } from "../src/Spoiler";
 import { useMatchMedia } from "../src/hooks/useMatchMedia";
+import { GIFMaker } from "./GIFFallbackMaker";
 
 import "./demo.css";
 
@@ -53,6 +54,7 @@ const App = () => {
 
   return (
     <main>
+      {false && <GIFMaker />}
       <h1>
         砂の女{" "}
         <Spoiler
