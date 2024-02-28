@@ -1,7 +1,7 @@
 import { colord } from "colord";
 import workletSource from "./worklet.js?raw";
 
-export const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
+export const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet !== undefined;
 
 interface InitOptions {
   readonly hidden?: boolean;
@@ -14,6 +14,7 @@ export interface SpoilerPainterOptions {
   readonly density?: number;
   readonly mimicWords?: boolean;
   readonly accentColor?: string;
+  readonly fallback?: string | false;
 }
 
 export type CtorOptions = InitOptions & SpoilerPainterOptions;
@@ -96,6 +97,7 @@ class SpoilerPainter {
     mimicWords = false,
     density = 0.08,
     accentColor,
+    fallback = "black",
   }: SpoilerPainterOptions = {}) {
     if (this.#wasDestroyed) {
       throw new Error("Painter has been destroyed and can't be used again.");
@@ -103,6 +105,11 @@ class SpoilerPainter {
 
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
+
+    if (!isCSSHoudiniSupported) {
+      this.el.style.setProperty("--fallback", fallback || "initial");
+      return;
+    }
 
     const isBlockElement = getComputedStyle(this.el).getPropertyValue("display") !== "inline";
     this.useBackgroundStyle("auto", "auto", { tile: false });
@@ -189,20 +196,32 @@ class SpoilerPainter {
   }
 
   hide({ animate = true }: TransitionOptions = {}) {
+    this.#isHidden = true;
+
+    if (!isCSSHoudiniSupported) {
+      this.el.style.setProperty("background", "var(--fallback)");
+      return;
+    }
+
     this.#fadeDuration = this.parseFadeDuration(animate);
     this.#tstop = null; // reset the stop point
     this.t = 0; // reset the clock
-    this.#isHidden = true;
 
     this.startAnimation();
   }
 
   reveal({ animate = true }: TransitionOptions = {}) {
+    this.#isHidden = false;
+
+    if (!isCSSHoudiniSupported) {
+      this.el.style.removeProperty("background");
+      return;
+    }
+
     const duration = this.parseFadeDuration(animate);
 
     this.#fadeDuration = duration;
     this.#tstop = this.t;
-    this.#isHidden = false;
 
     if (duration <= 0) {
       this.stopAnimation();
