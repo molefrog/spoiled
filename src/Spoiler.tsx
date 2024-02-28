@@ -12,9 +12,10 @@ import {
 
 import { useMatchMedia } from "./hooks/useMatchMedia";
 import { useIsomorphicLayoutEffect } from "./hooks/useIsomorphicLayoutEffect";
-
 import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
+
 import SpoilerStyles from "./Spoiler.module.css";
+import unsupportedImg from "./assets/fallback-static-128px.webp";
 
 export type SpoilerProps = {
   // control spoiler state from the parent
@@ -153,7 +154,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     gap,
     density,
     noiseFadeDuration,
-    fallback,
+    fallback = `repeat top left / 64px 64px url(${unsupportedImg})`,
 
     // inherited props
     className,
