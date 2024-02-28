@@ -1,7 +1,7 @@
 {
   "name": "spoiled",
-  "private": true,
-  "version": "0.0.0",
+  "description": "Realistic animated <Spoiler /> component for React",
+  "version": "0.1.0",
   "type": "module",
   "main": "esm/spoiled.js",
   "exports": {
@@ -22,7 +22,8 @@
     "build": "tsc && vite build",
     "bundle": "tsc && BUNDLE_LIBRARY=1 vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "prepublishOnly": "npm run bundle"
   },
   "peerDependencies": {
     "react": "^18.0.0",
