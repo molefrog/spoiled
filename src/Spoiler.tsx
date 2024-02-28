@@ -221,7 +221,9 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     isHidden ? `${SpoilerStyles.hidden}` : "",
     // append className provided above
     className,
-  ].join(" ");
+  ]
+    .filter((x) => x)
+    .join(" ");
 
   let withTransition = children; // no transition, no inner element
 
@@ -239,7 +241,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
       : createElement(tagName, {
           children: withTransition,
           "aria-expanded": !isHidden,
-          "aria-label": "spoiler alert",
+          "data-hidden": isHidden ? true : undefined,
         });
 
   return cloneElement(template, {
