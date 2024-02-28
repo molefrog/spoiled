@@ -1,7 +1,7 @@
 import { colord } from "colord";
 import workletSource from "./worklet.js?raw";
 
-const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
+export const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet;
 
 interface InitOptions {
   readonly hidden?: boolean;

@@ -7,12 +7,12 @@ import dts from "vite-plugin-dts";
 const buildLibraryConfig: UserConfig = {
   root: ".",
 
-  plugins: [dts()],
+  plugins: [dts({ rollupTypes: true })],
 
   build: {
     outDir: "esm",
     lib: {
-      entry: "src/Spoiler.tsx",
+      entry: "src/index.ts",
       formats: ["es"],
       fileName: "spoiled",
     },

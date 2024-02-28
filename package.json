@@ -5,7 +5,11 @@
   "type": "module",
   "main": "esm/spoiled.js",
   "exports": {
-    ".": "./esm/spoiled.js"
+    ".": {
+      "types": "./esm/Spoiler.d.ts",
+      "default": "./esm/spoiled.js"
+    },
+    "./esm/style.css": "./esm/style.css"
   },
   "types": "esm/Spoiler.d.ts",
   "files": [
