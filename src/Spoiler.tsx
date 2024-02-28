@@ -153,6 +153,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     gap,
     density,
     noiseFadeDuration,
+    fallback,
 
     // inherited props
     className,
@@ -175,8 +176,15 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   fadeDuration.current = noiseFadeDuration;
 
   const painterOptions = useMemo(() => {
-    return { fps, gap, density, mimicWords, accentColor: painterColor };
-  }, [fps, gap, density, mimicWords, painterColor]);
+    return {
+      fps,
+      gap,
+      density,
+      mimicWords,
+      accentColor: painterColor,
+      fallback,
+    };
+  }, [fps, gap, density, mimicWords, painterColor, fallback]);
 
   const [painterOptionsOnInit] = useState(() => painterOptions);
 
