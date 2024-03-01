@@ -16,6 +16,14 @@ export interface SpoilerPainterOptions {
   readonly fallback?: string | false;
 }
 
+export const DEFAULT_OPTIONS = {
+  fps: 24,
+  gap: 6,
+  density: 0.08,
+  mimicWords: false,
+  fallback: "black",
+} as const;
+
 export type CtorOptions = InitOptions & SpoilerPainterOptions;
 
 interface TransitionOptions {
@@ -87,12 +95,12 @@ class SpoilerPainter {
    *         the size limit)
    */
   update({
-    fps = DEFAULT_FPS,
-    gap = 6,
-    mimicWords = false,
-    density = 0.08,
+    fps = DEFAULT_OPTIONS.fps,
+    gap = DEFAULT_OPTIONS.gap,
+    mimicWords = DEFAULT_OPTIONS.mimicWords,
+    density = DEFAULT_OPTIONS.density,
+    fallback = DEFAULT_OPTIONS.fallback,
     accentColor,
-    fallback = "black",
   }: SpoilerPainterOptions = {}) {
     if (this.#wasDestroyed) {
       throw new Error("Painter has been destroyed and can't be used again.");
