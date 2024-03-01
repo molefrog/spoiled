@@ -1,6 +1,8 @@
 ## Spoiled: Realistic `<Spoiler />` component for React
 
-Inspired by Telegram spoilers, **spoiled** renders an animated particle cloud covering text, inline
+<img src="demo/readme-header.webp" alt="Spoiled demo - hide your precious secrets" />
+
+Inspired by [Telegram spoilers](https://telegram.org/blog/reactions-spoilers-translations#spoilers), **spoiled** renders an animated particle cloud covering text, inline
 or block elements, keeping them hidden until revealed.
 
 - Uses **[CSS Painting API](https://caniuse.com/css-paint-api) (Houdini)** to achive realistic
