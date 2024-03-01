@@ -1,6 +1,4 @@
-## Spoiled: Hide your precious secrets
-
-**Realistic `<Spoiler />` component for React**
+## Spoiled: Realistic `<Spoiler />` component for React
 
 Inspired by Telegram spoilers, **spoiled** renders an animated particle cloud covering text, inline
 or block elements, keeping them hidden until revealed.
