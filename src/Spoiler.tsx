@@ -15,7 +15,10 @@ import { useIsomorphicLayoutEffect } from "./hooks/useIsomorphicLayoutEffect";
 import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
 
 import SpoilerStyles from "./Spoiler.module.css";
-import unsupportedImg from "./assets/fallback-static-128px.webp";
+
+// fallback images for light/dark themes
+import fallbackLightImg from "./assets/fallback-light.webp";
+import fallbackDarkImg from "./assets/fallback-dark.webp";
 
 export type SpoilerProps = {
   // control spoiler state from the parent
@@ -118,6 +121,13 @@ const useRevealOn = (
   return eventHandlers;
 };
 
+const useIsDarkTheme = (theme: SpoilerProps["theme"]) => {
+  const systemIsDarkTheme = useMatchMedia("(prefers-color-scheme: dark)");
+  const isDarkTheme = theme === "system" ? systemIsDarkTheme : theme === "dark";
+
+  return isDarkTheme;
+};
+
 /**
  * Gets the accent color for the background noise (painter) based on theme preference and
  * custom colors (provided via `accentColor` prop).
@@ -126,10 +136,7 @@ const useRevealOn = (
  * @param theme - "system" | "light" | "dark"
  * @returns color
  */
-const useAccentColor = (color: string | [string, string], theme: SpoilerProps["theme"]) => {
-  const systemIsDarkTheme = useMatchMedia("(prefers-color-scheme: dark)");
-  const isDarkTheme = theme === "system" ? systemIsDarkTheme : theme === "dark";
-
+const useAccentColor = (color: string | [string, string], isDarkTheme: boolean) => {
   // convert from shorthand
   const [light, dark = light] = [color].flat() as string[];
 
@@ -154,7 +161,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     gap,
     density,
     noiseFadeDuration,
-    fallback = `repeat top left / 64px 64px url(${unsupportedImg})`,
+    fallback,
 
     // inherited props
     className,
@@ -170,22 +177,28 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const [isHidden] = state;
   const [isHiddenInitial] = useState(() => isHidden);
 
-  const painterColor = useAccentColor(accentColor, theme);
+  const isDarkTheme = useIsDarkTheme(theme);
+  const painterColor = useAccentColor(accentColor, isDarkTheme);
 
   // save latest value of `noiseFadeDuration` to be used in the effect below
   const fadeDuration = useRef(noiseFadeDuration);
   fadeDuration.current = noiseFadeDuration;
 
   const painterOptions = useMemo(() => {
+    let fallbackStyle =
+      fallback ??
+      // image is 32x32
+      `repeat top left / 16px 16px url(${isDarkTheme ? fallbackDarkImg : fallbackLightImg})`;
+
     return {
       fps,
       gap,
       density,
       mimicWords,
       accentColor: painterColor,
-      fallback,
+      fallback: fallbackStyle,
     };
-  }, [fps, gap, density, mimicWords, painterColor, fallback]);
+  }, [fps, gap, density, mimicWords, painterColor, fallback, isDarkTheme]);
 
   const [painterOptionsOnInit] = useState(() => painterOptions);
 
