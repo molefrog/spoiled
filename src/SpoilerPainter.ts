@@ -4,7 +4,6 @@ import workletSource from "./worklet.js?raw";
 export const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet !== undefined;
 
 interface InitOptions {
-  readonly hidden?: boolean;
   readonly onlyInViewport?: boolean;
 }
 
@@ -51,17 +50,12 @@ class SpoilerPainter {
   constructor(el: HTMLElement, options: CtorOptions = {}) {
     this.el = el;
 
+    this.#tstop = 0;
     this.update(options);
 
     if (options.onlyInViewport === true) {
       // ensure that animation isn't running when the element is not visible
       this.#watchInViewport();
-    }
-
-    if (options.hidden === undefined || options.hidden === true) {
-      this.hide({ animate: false });
-    } else {
-      this.reveal({ animate: false });
     }
   }
 
@@ -171,7 +165,7 @@ class SpoilerPainter {
   }
 
   /**
-   * Hides and revelas the content. Turns the noise animation on and off.
+   * Hides and reveals the content. Turns the noise animation on and off.
    */
   #isHidden: boolean = false;
 

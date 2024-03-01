@@ -175,7 +175,6 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
 
   const state = useIsHiddenState(props);
   const [isHidden] = state;
-  const [isHiddenInitial] = useState(() => isHidden);
 
   const isDarkTheme = useIsDarkTheme(theme);
   const painterColor = useAccentColor(accentColor, isDarkTheme);
@@ -204,10 +203,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
 
   // attach a painter that will animate the background noise
   useIsomorphicLayoutEffect(() => {
-    const spoiler = new SpoilerPainter(ref.current!, {
-      ...painterOptionsOnInit,
-      hidden: isHiddenInitial,
-    });
+    const spoiler = new SpoilerPainter(ref.current!, painterOptionsOnInit);
     painterRef.current = spoiler;
 
     return () => {
@@ -218,7 +214,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
 
   useIsomorphicLayoutEffect(() => {
     const painter = painterRef.current;
-    const options = fadeDuration.current ? { animate: fadeDuration.current } : {};
+    const options = fadeDuration.current !== undefined ? { animate: fadeDuration.current } : {};
 
     // value has changed
     if (painter && isHidden !== painter.isHidden) {
