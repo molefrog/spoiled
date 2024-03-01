@@ -19,7 +19,7 @@ export interface SpoilerPainterOptions {
 export const DEFAULT_OPTIONS = {
   fps: 24,
   gap: 6,
-  density: 0.08,
+  density: 0.12,
   mimicWords: false,
   fallback: "black",
 } as const;

@@ -111,7 +111,7 @@ You can also use `fps` and `density` props to control the performance:
 // default FPS is 24, but it should look good at 16-20 as well
 <Spoiler fps={16} />
 
-// Default: 0.08
+// Default: 0.12
 // Controls the number of particles rendered
 // The higher, the more dense the noise
 <Spoiler density={0.2}>Fat secret</Spoiler>
