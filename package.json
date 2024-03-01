@@ -3,6 +3,7 @@
   "description": "Realistic animated <Spoiler /> component for React",
   "version": "0.1.0",
   "type": "module",
+  "license": "Unlicense",
   "main": "esm/spoiled.js",
   "exports": {
     ".": {
