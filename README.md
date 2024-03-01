@@ -7,13 +7,9 @@ or block elements, keeping them hidden until revealed.
 
 - Uses **[CSS Painting API](https://caniuse.com/css-paint-api) (Houdini)** to achive realistic
   rendering for inline elements. Comes with a static image **fallback**;
-
 - Supports **light/dark/system** mode;
-
 - Animated **content transitions** (_fade/iris_), or custom;
-
 - Respects `prefers-reduced-motion`;
-
 - Control the performance: **FPS**, **density**, **color**, and more;
 
 ### How to use?
