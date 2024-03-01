@@ -1,42 +1,14 @@
 import * as React from "react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 
-import { SpoilerPainter } from "../src/SpoilerPainter";
 import { Spoiler } from "../src/Spoiler";
 import { useMatchMedia } from "../src/hooks/useMatchMedia";
 import { GIFMaker } from "./GIFFallbackMaker";
 
 import "./demo.css";
 
-const useVanillaSpoilers = () => {
-  const firstRun = useRef(true);
-
-  useLayoutEffect(() => {
-    if (!firstRun.current) {
-      return;
-    }
-
-    for (const el of document.querySelectorAll(".spoiler-vanilla")) {
-      if (el instanceof HTMLElement) {
-        const spoiler = new SpoilerPainter(el, { fps: 24 });
-
-        el.addEventListener("click", () => {
-          if (spoiler.isHidden) {
-            spoiler.reveal();
-          } else {
-            spoiler.hide();
-          }
-        });
-      }
-
-      firstRun.current = false;
-    }
-  }, []);
-};
-
 const App = () => {
-  useVanillaSpoilers();
   const reducedMotion = useMatchMedia("(prefers-reduced-motion: reduce)");
   const isDarkScheme = useMatchMedia("(prefers-color-scheme: dark)");
 
@@ -129,14 +101,7 @@ const App = () => {
         Hiroshi Teshigahara (January 28, 1927 – April 14, 2001) was an avant-garde Japanese
         filmmaker.
       </p>
-      <hr /> <br />
-      <div className="increasing-block">
-        <div className="spoiler-vanilla block" style={{ width: "16px" }}></div>
-        <div className="spoiler-vanilla block" style={{ width: "32px" }}></div>
-        <div className="spoiler-vanilla block" style={{ width: "64px" }}></div>
-        <div className="spoiler-vanilla block" style={{ width: "96px" }}></div>
-        <div className="spoiler-vanilla block" style={{ width: "320px" }}></div>
-      </div>
+      <hr />
       <p>
         <small>
           Prefers reduced motion: <code>{String(reducedMotion)}</code>
