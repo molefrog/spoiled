@@ -28,9 +28,43 @@
 }
 
 /**
- * Animated content transitions: 
- * Iris animation
+ * "Iris" reveal effect
+ * Adapted from https://expensive.toys/blog/fancy-css-reveal-effects
  */
+
+@property --iris-gradient-length {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --iris-radius {
+  syntax: "<length> | <percentage>";
+  inherits: false;
+  initial-value: 50px;
+}
+
+.transition.iris {
+  mask: radial-gradient(
+      circle closest-corner,
+      black var(--iris-gradient-length),
+      transparent calc(var(--iris-gradient-length) + var(--iris-radius))
+    )
+    no-repeat center;
+  transition: --iris-gradient-length 0.3s ease-out, opacity 0.5s ease-out;
+}
+
+.spoiler.hidden > .transition.iris {
+  --hide-duration: 0.15s;
+  opacity: 0;
+
+  --iris-gradient-length: 0%;
+  --iris-radius: 0px;
+
+  /* quickly hide, animate opacity only */
+  transition: --iris-gradient-length 0s linear var(--hide-duration),
+    opacity var(--hide-duration) ease-out;
+}
 
 /* 
   it is a hack to ensure the mask is fully removed if max mask-size isn't enough to 
@@ -42,20 +76,6 @@
   }
 }
 
-.transition.iris {
-  mask-image: radial-gradient(circle closest-side, black 0%, black 75%, transparent 100%);
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: max(200vw, 200vh) max(200vw, 200vw);
-  transition: mask-size 0.5s linear, opacity 0.6s ease-out;
-}
-
 .spoiler:not(.hidden) > .transition.iris {
-  animation: 0s linear 0.6s 1 forwards remove-mask;
-}
-
-.spoiler.hidden > .transition.iris {
-  mask-size: 0px 0px;
-  opacity: 0;
-  transition: mask-size 0s linear 0.15s, opacity 0.15s ease-out;
+  animation: 0s linear 0.3s 1 forwards remove-mask;
 }
