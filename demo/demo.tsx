@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 
-import { Spoiler } from "../src/Spoiler";
+import { Spoiler } from "../src/index";
 import { useMatchMedia } from "../src/hooks/useMatchMedia";
 import { GIFMaker } from "./GIFFallbackMaker";
 

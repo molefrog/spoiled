@@ -1,18 +1,32 @@
 {
   "name": "spoiled",
   "description": "Realistic animated <Spoiler /> component for React",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "Unlicense",
-  "main": "esm/spoiled.js",
+  "main": "esm/index.js",
   "exports": {
     ".": {
-      "types": "./esm/Spoiler.d.ts",
-      "default": "./esm/spoiled.js"
+      "types": "./esm/index.d.ts",
+      "default": "./esm/index.js"
     },
-    "./esm/style.css": "./esm/style.css"
+    "./unstyled": {
+      "types": "./esm/index_unstyled.d.ts",
+      "default": "./esm/index_unstyled.js"
+    },
+    "./style.css": "./esm/style.css"
   },
-  "types": "esm/Spoiler.d.ts",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "esm/index.d.ts"
+      ],
+      "unstyled": [
+        "esm/index_unstyled.d.ts"
+      ]
+    }
+  },
+  "types": "esm/index.d.ts",
   "files": [
     "esm",
     "src",
@@ -21,10 +35,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "bundle": "tsc && BUNDLE_LIBRARY=1 vite build",
+    "bundle": "BUNDLE_LIBRARY=1 vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "prepublishOnly": "npm run bundle"
+    "prepublishOnly": "tsc && npm run bundle"
   },
   "peerDependencies": {
     "react": "^18.0.0",
