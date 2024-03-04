@@ -1,8 +1,8 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useInsertionEffect } from "react";
 
 // Copied from:
 // https://github.com/facebook/react/blob/main/packages/shared/ExecutionEnvironment.js
-const canUseDOM = !!(
+export const canUseDOM = !!(
   typeof window !== "undefined" &&
   typeof window.document !== "undefined" &&
   typeof window.document.createElement !== "undefined"
@@ -14,3 +14,4 @@ const canUseDOM = !!(
 // To get around it, we can conditionally useEffect on the server (no-op) and
 // useLayoutEffect in the browser."
 export const useIsomorphicLayoutEffect = canUseDOM ? useLayoutEffect : useEffect;
+export const useIsomorphicInsertionEffect = canUseDOM ? useInsertionEffect : useEffect;
