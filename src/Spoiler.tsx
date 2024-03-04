@@ -12,9 +12,15 @@ import {
 
 import { useMatchMedia } from "./hooks/useMatchMedia";
 import { useIsomorphicLayoutEffect } from "./hooks/useIsomorphicLayoutEffect";
+import { useStyleSheet } from "./hooks/useStyleSheet";
 import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
 
+// styles
 import SpoilerStyles from "./Spoiler.module.css";
+
+// contains the CSS with the styles imported above
+type StylesCSS = { css: string | null };
+export let __SPOILER_STYLES_CSS: StylesCSS = { css: null };
 
 // fallback images for light/dark themes
 import fallbackLightImg from "./assets/fallback-light.webp";
@@ -182,6 +188,9 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   // save latest value of `noiseFadeDuration` to be used in the effect below
   const fadeDuration = useRef(noiseFadeDuration);
   fadeDuration.current = noiseFadeDuration;
+
+  // inject styles
+  useStyleSheet(__SPOILER_STYLES_CSS.css, ref);
 
   const painterOptions = useMemo(() => {
     let fallbackStyle =

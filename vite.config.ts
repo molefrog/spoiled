@@ -12,9 +12,8 @@ const buildLibraryConfig: UserConfig = {
   build: {
     outDir: "esm",
     lib: {
-      entry: "src/index.ts",
+      entry: ["src/index.ts", "src/index_unstyled.ts"],
       formats: ["es"],
-      fileName: "spoiled",
     },
     rollupOptions: {
       external: ["react"],
