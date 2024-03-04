@@ -1,7 +1,7 @@
 {
   "name": "spoiled",
   "description": "Realistic animated <Spoiler /> component for React",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "license": "Unlicense",
   "main": "esm/index.js",
@@ -10,7 +10,7 @@
       "types": "./esm/index.d.ts",
       "default": "./esm/index.js"
     },
-    "./unstyled": {
+    "./no-css": {
       "types": "./esm/index_unstyled.d.ts",
       "default": "./esm/index_unstyled.js"
     },
@@ -21,7 +21,7 @@
       ".": [
         "esm/index.d.ts"
       ],
-      "unstyled": [
+      "no-css": [
         "esm/index_unstyled.d.ts"
       ]
     }

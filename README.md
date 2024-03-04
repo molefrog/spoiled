@@ -2,8 +2,9 @@
 
 ## Realistic `<Spoiler />` component for React
 
-Inspired by [Telegram spoilers](https://telegram.org/blog/reactions-spoilers-translations#spoilers), **spoiled** renders an animated particle cloud covering text, inline
-or block elements, keeping them hidden until revealed.
+Inspired by [Telegram spoilers](https://telegram.org/blog/reactions-spoilers-translations#spoilers),
+**spoiled** renders an animated particle cloud covering text, inline or block elements, keeping them
+hidden until revealed.
 
 - Uses **[CSS Painting API](https://caniuse.com/css-paint-api) (Houdini)** to achive realistic
   rendering for inline elements. Comes with a static image **fallback**;
@@ -25,9 +26,6 @@ Wrap your text in a spoiler, so the plot twists stay hidden:
 ```jsx
 import { Spoiler } from "spoiled";
 
-// content transitions
-import "spoiled/style.css";
-
 // Reveals on hover
 <Spoiler>
   Hogwarts is a high-tech <b>startup incubator</b>
@@ -39,6 +37,7 @@ By default, the spoiler:
 - reveals on hover (uncontrolled)
 - uses system color scheme
 - wraps the content in a `span` element
+- injects a small CSS for content transitions (please read below on how to opt out)
 
 All standard props are proxied to the underlying `span` element. You can also use `tagName` prop to
 change the tag:
@@ -126,6 +125,19 @@ Since it can be inaccurate, use `mimicWords` setting to disable it:
 
 ```jsx
 <Spoiler mimicWords={false}>This will be rendered as a solid line of text</Spoiler>
+```
+
+### Styling
+
+Spoiled will on-demand inject a small `<style>` tag into the document with a CSS needed to animate
+hide and reveal transitions. You can use an unstyled version instead and load these styles
+differently.
+
+```jsx
+import { Spoiler } from "spoiled/no-css";
+
+// If you're using Vite or similar bundler, these styles will be written to the final CSS bundle
+import "spoiled/style.css";
 ```
 
 ## Disclaimer
