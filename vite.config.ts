@@ -1,13 +1,36 @@
 /// <reference types="vitest" />
 
-import { UserConfig, defineConfig, mergeConfig } from "vite";
+import { UserConfig, defineConfig, mergeConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
+
+const injectCompiledCSS: Plugin = {
+  name: "inject-css",
+  enforce: "post", // Ensure this runs after Vite's internal CSS handling
+
+  generateBundle(_options, bundle) {
+    let css = "";
+
+    Object.values(bundle).forEach((file) => {
+      if (file.fileName.endsWith(".css") && file.type === "asset") {
+        css += file.source.toString();
+      }
+    });
+
+    const source = Object.values(bundle).find((file) => {
+      return file.type === "chunk" && file.fileName.endsWith("index.js");
+    })!;
+
+    if (source.type === "chunk") {
+      source.code = source.code.replace(`"INLINED_CSS_GOES_HERE"`, JSON.stringify(css));
+    }
+  },
+};
 
 const buildLibraryConfig: UserConfig = {
   root: ".",
 
-  plugins: [dts({ rollupTypes: true })],
+  plugins: [dts({ rollupTypes: true }), injectCompiledCSS],
 
   build: {
     outDir: "esm",

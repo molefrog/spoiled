@@ -1,2 +1,2 @@
 export * from "./Spoiler";
-export * from "./SpoilerPainter";
+export { SpoilerPainter } from "./SpoilerPainter";
