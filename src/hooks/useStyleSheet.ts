@@ -36,6 +36,7 @@ export const useStyleSheet = (styles: string | null, nodeRef: RefObject<HTMLElem
     if (!styleElementMap.has(parentDocument)) {
       const styleElement = parentDocument.createElement("style");
       styleElement.innerHTML = css;
+      styleElement.setAttribute("data-spoiled", "");
 
       styleElementMap.set(parentDocument, { element: styleElement, refCount: 0 });
       parentDocument.head.appendChild(styleElement);

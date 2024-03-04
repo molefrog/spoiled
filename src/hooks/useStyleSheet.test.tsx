@@ -15,6 +15,7 @@ describe("useStyleSheet hook", () => {
     const styles = document.head.getElementsByTagName("style");
     expect(styles).toHaveLength(1);
     expect(styles[0].innerHTML).toContain("background: red;");
+    expect(styles[0].getAttribute("data-spoiled")).toBe("");
 
     unmount();
   });
