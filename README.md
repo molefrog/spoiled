@@ -13,6 +13,9 @@ hidden until revealed.
 - Respects `prefers-reduced-motion`;
 - Control the performance: **FPS**, **density**, **color**, and more;
 
+> CSS Painting API is still [unsupported](https://caniuse.com/css-paint-api) in Firefox and Safari. We provide a static fallback image for these browsers,
+> that you can customise via the `fallback` prop. Also, there is a [polyfill](https://github.com/GoogleChromeLabs/css-paint-polyfill) available.
+
 ### How to use?
 
 Install the package, requires React 18:
