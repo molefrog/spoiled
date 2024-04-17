@@ -1,3 +1,5 @@
+"use client";
+
 export * from "./index_unstyled";
 
 import { __SPOILER_STYLES_CSS } from "./index_unstyled";
