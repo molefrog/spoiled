@@ -27,7 +27,8 @@ const styleElementMap: StyleElementMap = new Map();
 export const useStyleSheet = (styles: string | null, nodeRef: RefObject<HTMLElement>): void => {
   const [css] = useState(() => styles); // css is constant and can't be changed between renders
   const [parentDocument] = useState(() =>
-    nodeRef.current ? nodeRef.current.ownerDocument : document
+    /* note: `document` can be `undefined` in some environments like SSR */
+    nodeRef.current ? nodeRef.current.ownerDocument : globalThis.document
   );
 
   useIsomorphicInsertionEffect(() => {
