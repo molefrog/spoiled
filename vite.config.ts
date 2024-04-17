@@ -3,6 +3,7 @@
 import { UserConfig, defineConfig, mergeConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
+import preserveDirectives from "rollup-preserve-directives";
 
 const injectCompiledCSS: Plugin = {
   name: "inject-css",
@@ -30,7 +31,7 @@ const injectCompiledCSS: Plugin = {
 const buildLibraryConfig: UserConfig = {
   root: ".",
 
-  plugins: [dts({ rollupTypes: true }), injectCompiledCSS],
+  plugins: [dts({ rollupTypes: true }), preserveDirectives(), injectCompiledCSS],
 
   build: {
     outDir: "esm",
