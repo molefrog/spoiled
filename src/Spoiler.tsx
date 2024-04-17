@@ -13,6 +13,7 @@ import {
 import { useMatchMedia } from "./hooks/useMatchMedia";
 import { useIsomorphicLayoutEffect } from "./hooks/useIsomorphicLayoutEffect";
 import { useStyleSheet } from "./hooks/useStyleSheet";
+import { useWatchResize } from "./hooks/useWatchResize";
 import { SpoilerPainter, SpoilerPainterOptions } from "./SpoilerPainter";
 
 // styles
@@ -179,6 +180,9 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   const ref = useRef<HTMLElement>(null);
   const painterRef = useRef<SpoilerPainter>();
 
+  // update whenever the element bounds change by 4px
+  const [boundsW, boundsH] = useWatchResize(ref, 4);
+
   const state = useIsHiddenState(props);
   const [isHidden] = state;
 
@@ -206,7 +210,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
       accentColor: painterColor,
       fallback: fallbackStyle,
     };
-  }, [fps, gap, density, mimicWords, painterColor, fallback, isDarkTheme]);
+  }, [fps, gap, density, mimicWords, painterColor, fallback, isDarkTheme, boundsW, boundsH]);
 
   const [painterOptionsOnInit] = useState(() => painterOptions);
 
@@ -264,7 +268,9 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
         });
 
   return cloneElement(template, {
-    ref,
+    ref: (el: HTMLElement) => {
+      ref.current = el;
+    },
     className: clx,
     ...useRevealOn(revealOn, state),
     ...elementProps,
