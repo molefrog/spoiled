@@ -268,9 +268,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
         });
 
   return cloneElement(template, {
-    ref: (el: HTMLElement) => {
-      ref.current = el;
-    },
+    ref,
     className: clx,
     ...useRevealOn(revealOn, state),
     ...elementProps,
