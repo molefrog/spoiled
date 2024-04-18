@@ -48,10 +48,6 @@ const buildLibraryConfig: UserConfig = {
 const devConfig: UserConfig = {
   root: "demo",
 
-  css: {
-    transformer: "lightningcss",
-  },
-
   test: {
     root: "src",
     environment: "happy-dom",

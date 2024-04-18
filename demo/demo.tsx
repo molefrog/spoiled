@@ -26,6 +26,8 @@ const App = () => {
 
   return (
     <main>
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+
       {false && <GIFMaker />}
       <h1>
         砂の女{" "}
