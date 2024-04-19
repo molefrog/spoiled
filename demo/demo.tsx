@@ -22,10 +22,10 @@ const App = () => {
   });
 
   return (
-    <main className="mx-auto max-w-[420px] px-2 pt-32">
+    <main className="mx-auto max-w-[420px] px-2 py-32">
       {false && <GIFMaker />}
 
-      <header className="text-center">
+      <header className="mb-12 text-center">
         <h1 className="mb-2 text-lg font-semibold">spoiled</h1>
         <h2 className="text-lg sm:px-10">
           <Spoiler
@@ -46,7 +46,7 @@ const App = () => {
       </header>
 
       <div className="prose-sm">
-        <div className="my-12 rounded-2xl bg-zinc-50 px-5 py-4">
+        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-4">
           <div className="mb-5 text-center">
             Inspired by the{" "}
             <a
@@ -63,15 +63,42 @@ const App = () => {
           <div className="flex justify-center">
             <a
               href="https://github.com/molefrog/spoiled"
-              className="f rounded-lg border-4 border-transparent bg-zinc-800 px-4 py-2 font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
+              className="f w-full rounded-lg border-4 border-transparent bg-zinc-800 px-4 py-2 text-center font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
             >
               Install & Docs →
             </a>
           </div>
         </div>
 
-        <div>
-          <h3>It&apos;s easy to use</h3>
+        {/** features */}
+        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-4 text-base">
+          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+            Uses{" "}
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/CSS_Painting_API">
+              CSS Painting API
+            </a>{" "}
+            for realistic rendering of inline elements. Comes with a fallback
+          </div>
+
+          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+            Animated <i>content transitions</i> (fade/iris), or custom
+          </div>
+
+          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+            Accessible, supports <i>light/dark/system</i> mode
+          </div>
+
+          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+            Customizable FPS, density, color, reveal duration and more
+          </div>
+
+          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+            Comes in styled or unstyled variants
+          </div>
+        </div>
+
+        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-2">
+          <h4 className="font-semibold text-indigo-600">⌘ It&apos;s easy to use</h4>
           <p>Install the package via npm:</p>
 
           <code>
