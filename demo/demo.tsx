@@ -30,7 +30,7 @@ const App = () => {
   useEffect(() => {
     const int = setInterval(() => {
       setTimeBased((prev) => !prev);
-    }, 2500);
+    }, 2000);
 
     return () => {
       clearInterval(int);
@@ -61,9 +61,9 @@ const App = () => {
         </h2>
       </header>
 
-      <div className="prose">
+      <div>
         <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-4">
-          <div className="mb-5 text-center">
+          <div className="prose mb-5 text-center">
             Inspired by the{" "}
             <a
               href="https://telegram.org/blog/reactions-spoilers-translations#spoilers"
@@ -86,7 +86,7 @@ const App = () => {
         </div>
 
         {/** features */}
-        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-4 text-base">
+        <div className="prose my-6 rounded-2xl bg-zinc-50 px-5 py-4 text-base">
           <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
             Uses{" "}
             <a href="https://developer.mozilla.org/en-US/docs/Web/API/CSS_Painting_API">
@@ -116,8 +116,8 @@ const App = () => {
           </div>
         </div>
 
-        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-2">
-          <h4 className="font-semibold text-indigo-600">⌘ It&apos;s easy to use</h4>
+        <div className="prose my-6 rounded-2xl bg-zinc-50 px-5 py-2">
+          <h4 className="mb-2 font-semibold text-indigo-600">⌘ It&apos;s easy to use</h4>
           <p>Install the package via npm:</p>
 
           <pre>npm i spoiled</pre>
@@ -125,7 +125,7 @@ const App = () => {
           <p>
             Now, wrap your text in a spoiler, so{" "}
             <Spoiler density={0.2} theme={colorTheme}>
-              the plot twists stay hidden
+              all essential plot twists and suprises remain hidden
             </Spoiler>
           </p>
 
@@ -144,7 +144,25 @@ const App = () => {
           </p>
         </div>
 
-        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-2 text-sm text-neutral-600">
+        {/** features */}
+        <div className="prose my-6 rounded-2xl bg-zinc-50 px-5 py-4 text-base">
+          <Spoiler fps={20} tagName="div" className="not-prose">
+            <img
+              className="w-full"
+              alt="Silly cat playing a piano"
+              src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmZvMDduYWZrcng2eWNyN2F2bnFvdTludXVnb3kxbm5uenBxMGRkdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vFtWp05vBYnMQ/giphy.gif"
+            ></img>
+          </Spoiler>
+          <p>
+            By default, spoiler wraps your content in a <code>{`<span />`}</code>, but you can use{" "}
+            <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#how-to-use">
+              <code>{`tagName`}</code> prop
+            </a>
+            , to customise the wrapper to hide block elements.
+          </p>
+        </div>
+
+        <div className="my-6 rounded-2xl bg-orange-50 px-5 py-5 text-sm text-neutral-600">
           As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a fallback
           though, so here is what it will look like in Safari.{" "}
           <SpoilerWithFallback>
