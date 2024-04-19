@@ -21,11 +21,11 @@ const App = () => {
   });
 
   return (
-    <main className="mx-auto max-w-[theme(screens.sm)] px-2 pt-32">
+    <main className="mx-auto max-w-[420px] px-2 pt-32">
       {false && <GIFMaker />}
 
-      <header className="mb-10 text-center">
-        <h1 className="mb-2 text-xl font-semibold">spoiled</h1>
+      <header className="text-center">
+        <h1 className="mb-2 text-lg font-semibold">spoiled</h1>
         <h2 className="text-lg sm:px-10">
           <Spoiler
             hidden={!timeBased}
@@ -43,27 +43,48 @@ const App = () => {
         </h2>
       </header>
 
-      <div className="rounded-lg bg-zinc-50 px-4 py-10 sm:px-11">
-        <p className="mb-5 text-center">
-          Inspired by the{" "}
-          <a
-            href="https://telegram.org/blog/reactions-spoilers-translations#spoilers"
-            target="_blank"
-            className="text-slate-700 underline decoration-slate-300 hover:text-blue-600 hover:decoration-blue-500"
-          >
-            spoiler markup in Telegram messenger
-          </a>
-          , spoiled displays an animated cloud of particles over content that should stay
-          confidential (until revealed).
-        </p>
+      <div className="prose-sm">
+        <div className="my-12 rounded-2xl bg-zinc-50 px-5 py-4">
+          <div className="mb-5 text-center">
+            Inspired by the{" "}
+            <a
+              href="https://telegram.org/blog/reactions-spoilers-translations#spoilers"
+              target="_blank"
+              className="text-slate-700 underline decoration-slate-300 hover:text-blue-600 hover:decoration-blue-500"
+            >
+              spoiler markup in Telegram messenger
+            </a>
+            , spoiled displays an animated cloud of particles over content that should stay
+            confidential (until revealed).
+          </div>
 
-        <div className="flex justify-center">
-          <a
-            href="https://github.com/molefrog/spoiled"
-            className="f rounded border-4 border-transparent bg-zinc-800 px-4 py-3 font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
-          >
-            Install & Docs →
-          </a>
+          <div className="flex justify-center">
+            <a
+              href="https://github.com/molefrog/spoiled"
+              className="f rounded-lg border-4 border-transparent bg-zinc-800 px-4 py-2 font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
+            >
+              Install & Docs →
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h3>It&apos;s easy to use</h3>
+          <p>Install the package via npm:</p>
+
+          <code>
+            <pre>npm i spoiled</pre>
+          </code>
+
+          <p>Wrap your text in a spoiler, so the plot twists stay hidden:</p>
+          <code>
+            <pre>{`import { Spoiler } from "spoiled";
+
+// Reveals on hover
+<Spoiler>
+  Hogwarts is a high-tech <b>startup incubator</b>
+</Spoiler>`}</pre>
+          </code>
         </div>
       </div>
     </main>
