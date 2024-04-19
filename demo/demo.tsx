@@ -9,6 +9,7 @@ import "./demo.css";
 
 const App = () => {
   const [timeBased, setTimeBased] = useState(false);
+  const colorTheme = "light";
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -32,6 +33,7 @@ const App = () => {
             noiseFadeDuration={2}
             density={0.2}
             className="header-text"
+            theme={colorTheme}
             aria-label="Spoiler component for React"
           >
             Hide your precious secrets. Realistic{" "}
