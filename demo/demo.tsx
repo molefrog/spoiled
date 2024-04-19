@@ -7,6 +7,22 @@ import { GIFMaker } from "./GIFFallbackMaker";
 
 import "./demo.css";
 
+// fallback images for light/dark themes
+import fallbackLightImg from "../src/assets/fallback-light.webp";
+
+const SpoilerWithFallback = (props) => {
+  return (
+    <span
+      style={{
+        background: `repeat top left / 16px 16px url(${fallbackLightImg})`,
+        color: "transparent",
+      }}
+    >
+      {props.children}
+    </span>
+  );
+};
+
 const App = () => {
   const [timeBased, setTimeBased] = useState(false);
   const colorTheme = "light";
@@ -45,14 +61,13 @@ const App = () => {
         </h2>
       </header>
 
-      <div className="prose-sm">
+      <div className="prose">
         <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-4">
           <div className="mb-5 text-center">
             Inspired by the{" "}
             <a
               href="https://telegram.org/blog/reactions-spoilers-translations#spoilers"
               target="_blank"
-              className="text-slate-700 underline decoration-slate-300 hover:text-blue-600 hover:decoration-blue-500"
             >
               spoiler markup in Telegram messenger
             </a>
@@ -81,19 +96,23 @@ const App = () => {
           </div>
 
           <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
-            Animated <i>content transitions</i> (fade/iris), or custom
+            Accessible, supports{" "}
+            <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#theming">
+              light/dark/system
+            </a>{" "}
+            mode
           </div>
 
           <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
-            Accessible, supports <i>light/dark/system</i> mode
+            Customizable FPS, density, color, noise animation, content transitions and more
           </div>
 
           <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
-            Customizable FPS, density, color, reveal duration and more
-          </div>
-
-          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
-            Comes in styled or unstyled variants
+            Comes in{" "}
+            <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#styling">
+              styled or unstyled
+            </a>{" "}
+            variants
           </div>
         </div>
 
@@ -101,19 +120,36 @@ const App = () => {
           <h4 className="font-semibold text-indigo-600">⌘ It&apos;s easy to use</h4>
           <p>Install the package via npm:</p>
 
-          <code>
-            <pre>npm i spoiled</pre>
-          </code>
+          <pre>npm i spoiled</pre>
 
-          <p>Wrap your text in a spoiler, so the plot twists stay hidden:</p>
-          <code>
-            <pre>{`import { Spoiler } from "spoiled";
+          <p>
+            Now, wrap your text in a spoiler, so{" "}
+            <Spoiler density={0.2} theme={colorTheme}>
+              the plot twists stay hidden
+            </Spoiler>
+          </p>
+
+          <pre>{`import { Spoiler } from "spoiled";
 
 // Reveals on hover
 <Spoiler>
-  Hogwarts is a high-tech <b>startup incubator</b>
+  Hogwarts is a startup incubator
 </Spoiler>`}</pre>
-          </code>
+
+          <p>
+            By default, the spoiler is uncontrolled and will reveal on hover. See how this behaviour{" "}
+            <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#hiding-and-revealing-the-spoiler">
+              can be customised.
+            </a>
+          </p>
+        </div>
+
+        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-2 text-sm text-neutral-600">
+          As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a fallback
+          though, so here is what it will look like in Safari.{" "}
+          <SpoilerWithFallback>
+            We use a tiny static image pattern as a fallback
+          </SpoilerWithFallback>
         </div>
       </div>
     </main>
