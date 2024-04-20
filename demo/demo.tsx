@@ -23,9 +23,18 @@ const SpoilerWithFallback = (props) => {
   );
 };
 
+const MessageBubble = ({ children, className }) => {
+  return (
+    <div
+      className={`${className} my-8 rounded-2xl border border-neutral-200 bg-neutral-50 px-6 py-5 shadow-lg`}
+    >
+      {children}
+    </div>
+  );
+};
+
 const App = () => {
   const [timeBased, setTimeBased] = useState(false);
-  const colorTheme = "light";
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -41,19 +50,18 @@ const App = () => {
     <main className="mx-auto max-w-[420px] px-2 py-32">
       {false && <GIFMaker />}
 
-      <header className="mb-12 text-center">
-        <h1 className="mb-2 text-lg font-semibold">spoiled</h1>
-        <h2 className="text-lg sm:px-10">
+      <header className="mb-14 text-center">
+        <h1 className="mb-2 text-lg font-semibold dark:text-slate-100">spoiled</h1>
+        <h2 className="text-xl sm:px-8 dark:text-slate-100">
           <Spoiler
             hidden={!timeBased}
             noiseFadeDuration={2}
             density={0.2}
             className="header-text"
-            theme={colorTheme}
             aria-label="Spoiler component for React"
           >
             Hide your precious secrets. Realistic{" "}
-            <code className="rounded bg-stone-100 px-0.5 py-0.5 text-base tracking-tight">
+            <code className="rounded bg-stone-100 px-0.5 py-0.5 text-base tracking-tight text-slate-900">
               {"<Spoiler />"}
             </code>{" "}
             component for React, powered by CSS Houdini
@@ -62,8 +70,9 @@ const App = () => {
       </header>
 
       <div>
-        <div className="my-6 rounded-2xl bg-zinc-50 px-5 py-4">
-          <div className="prose mb-5 text-center">
+        {/** CTA */}
+        <MessageBubble>
+          <div className="prose mb-5 text-center text-base/6">
             Inspired by the{" "}
             <a
               href="https://telegram.org/blog/reactions-spoilers-translations#spoilers"
@@ -83,11 +92,11 @@ const App = () => {
               Install & Docs →
             </a>
           </div>
-        </div>
+        </MessageBubble>
 
         {/** features */}
-        <div className="prose my-6 rounded-2xl bg-zinc-50 px-5 py-4 text-base">
-          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+        <MessageBubble className="prose text-base/6">
+          <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
             Uses{" "}
             <a href="https://developer.mozilla.org/en-US/docs/Web/API/CSS_Painting_API">
               CSS Painting API
@@ -95,7 +104,7 @@ const App = () => {
             for realistic rendering of inline elements. Comes with a fallback
           </div>
 
-          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+          <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
             Accessible, supports{" "}
             <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#theming">
               light/dark/system
@@ -103,28 +112,29 @@ const App = () => {
             mode
           </div>
 
-          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+          <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
             Customizable FPS, density, color, noise animation, content transitions and more
           </div>
 
-          <div className="border-b border-neutral-200 py-3 first:pt-0 last:border-b-0 last:pb-0">
+          <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
             Comes in{" "}
             <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#styling">
               styled or unstyled
             </a>{" "}
             variants
           </div>
-        </div>
+        </MessageBubble>
 
-        <div className="prose my-6 rounded-2xl bg-zinc-50 px-5 py-2">
-          <h4 className="mb-2 font-semibold text-indigo-600">⌘ It&apos;s easy to use</h4>
+        {/** quick start */}
+        <MessageBubble className="prose text-base/6">
+          <h4 className="mb-2 font-semibold">⌘ It&apos;s easy to use</h4>
           <p>Install the package via npm:</p>
 
           <pre>npm i spoiled</pre>
 
           <p>
-            Now, wrap your text in a spoiler, so{" "}
-            <Spoiler density={0.2} theme={colorTheme}>
+            Now, wrap your text in a spoiler, so that{" "}
+            <Spoiler density={0.2} theme={"light"}>
               all essential plot twists and suprises remain hidden
             </Spoiler>
           </p>
@@ -142,11 +152,11 @@ const App = () => {
               can be customised.
             </a>
           </p>
-        </div>
+        </MessageBubble>
 
-        {/** features */}
-        <div className="prose my-6 rounded-2xl bg-zinc-50 px-5 py-4 text-base">
-          <Spoiler fps={20} tagName="div" className="not-prose">
+        {/** block elements */}
+        <MessageBubble className="prose text-base/6">
+          <Spoiler fps={20} tagName="div" className="not-prose" theme="light">
             <img
               className="w-full"
               alt="Silly cat playing a piano"
@@ -160,9 +170,9 @@ const App = () => {
             </a>
             , to customise the wrapper to hide block elements.
           </p>
-        </div>
+        </MessageBubble>
 
-        <div className="my-6 rounded-2xl bg-orange-50 px-5 py-5 text-sm text-neutral-600">
+        <div className="rounded-2xl px-6 py-2 text-sm/6 text-neutral-500 dark:text-neutral-400">
           As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a fallback
           though, so here is what it will look like in Safari.{" "}
           <SpoilerWithFallback>
