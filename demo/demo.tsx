@@ -26,7 +26,7 @@ const SpoilerWithFallback = (props) => {
 const MessageBubble = ({ children, className }) => {
   return (
     <div
-      className={`${className} my-8 rounded-2xl border border-neutral-200 bg-neutral-50 px-6 py-5 shadow-lg`}
+      className={`${className} my-5 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-5 shadow-md sm:my-8 sm:px-6 sm:shadow-lg dark:shadow-slate-800`}
     >
       {children}
     </div>
@@ -156,7 +156,9 @@ const App = () => {
 
         {/** block elements */}
         <MessageBubble className="prose text-base/6">
-          <Spoiler fps={20} tagName="div" className="not-prose" theme="light">
+          <h4 className="mb-2 font-semibold">⌘ Works with block elements too</h4>
+
+          <Spoiler fps={20} tagName="div" className="not-pros" theme="light">
             <img
               className="w-full"
               alt="Silly cat playing a piano"
@@ -172,12 +174,25 @@ const App = () => {
           </p>
         </MessageBubble>
 
-        <div className="rounded-2xl px-6 py-2 text-sm/6 text-neutral-500 dark:text-neutral-400">
+        <div className="rounded-2xl px-6 py-2 text-sm/5 text-neutral-500 dark:text-neutral-400">
           As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a fallback
           though, so here is what it will look like in Safari.{" "}
           <SpoilerWithFallback>
             We use a tiny static image pattern as a fallback
           </SpoilerWithFallback>
+        </div>
+      </div>
+
+      <div className="bottom-4 pt-14 text-center text-xs sm:fixed sm:right-6 sm:max-w-60 sm:text-right">
+        <div className="text-sm dark:text-neutral-300">
+          made by{" "}
+          <a href="https://molefrog.com" className="font-semibold">
+            molefrog
+          </a>
+        </div>
+
+        <div className="text-balance text-xs text-neutral-500 dark:text-neutral-500">
+          we don't guarantee that the secrets will stay hidden, use at your own risk
         </div>
       </div>
     </main>
