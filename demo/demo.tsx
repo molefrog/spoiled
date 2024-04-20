@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom/client";
 
 import { Spoiler } from "../src/index";
 import { GIFMaker } from "./GIFFallbackMaker";
+import { highlight } from "sugar-high";
 
 import "./demo.css";
 
@@ -26,11 +27,15 @@ const SpoilerWithFallback = (props) => {
 const MessageBubble = ({ children, className }) => {
   return (
     <div
-      className={`${className} my-5 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-5 shadow-md sm:my-8 sm:px-6 sm:shadow-lg dark:shadow-slate-800`}
+      className={`${className} my-5 rounded-2xl border border-neutral-200 bg-white px-4 py-5 shadow-lg sm:my-8 sm:px-6 sm:shadow-2xl dark:shadow-slate-800`}
     >
       {children}
     </div>
   );
+};
+
+const CodeHighlight = ({ children, ...rest }) => {
+  return <pre {...rest} dangerouslySetInnerHTML={{ __html: highlight(children) }}></pre>;
 };
 
 const App = () => {
@@ -130,7 +135,7 @@ const App = () => {
           <h4 className="mb-2 font-semibold">⌘ It&apos;s easy to use</h4>
           <p>Install the package via npm:</p>
 
-          <pre>npm i spoiled</pre>
+          <pre className="bg-gray-50 text-gray-900 shadow-inner">npm i spoiled</pre>
 
           <p>
             Now, wrap your text in a spoiler, so that{" "}
@@ -139,12 +144,12 @@ const App = () => {
             </Spoiler>
           </p>
 
-          <pre>{`import { Spoiler } from "spoiled";
+          <CodeHighlight className="bg-gray-50 text-gray-900 shadow-inner">{`import { Spoiler } from "spoiled";
 
 // Reveals on hover
 <Spoiler>
   Hogwarts is a startup incubator
-</Spoiler>`}</pre>
+</Spoiler>`}</CodeHighlight>
 
           <p>
             By default, the spoiler is uncontrolled and will reveal on hover. See how this behaviour{" "}
@@ -187,7 +192,7 @@ const App = () => {
         <div className="text-sm dark:text-neutral-300">
           made by{" "}
           <a href="https://molefrog.com" className="font-semibold">
-            molefrog
+            @molefrog
           </a>
         </div>
 

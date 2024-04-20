@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --sh-class: #383a42; /* Soft Black */
+  --sh-identifier: #407f5c; /* Forest Green */
+  --sh-sign: #d55fde; /* Soft Pink */
+  --sh-string: #b59f3b; /* Mustard Yellow */
+  --sh-keyword: #0170c1; /* Medium Blue */
+  --sh-comment: #a0a1a7; /* Dark Gray */
+  --sh-jsxliterals: #7960a9; /* Muted Purple */
+}
+
 .placeholder {
   margin: 64px 0;
 }
