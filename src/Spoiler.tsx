@@ -48,6 +48,8 @@ export type SpoilerProps = {
   theme?: "system" | "light" | "dark";
 
   noiseFadeDuration?: number;
+
+  forceFallback?: boolean;
 } & Omit<JSX.IntrinsicElements["span"], "style"> &
   AsChildProps &
   Omit<SpoilerPainterOptions, "accentColor">;
@@ -85,7 +87,7 @@ const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] 
 
       props.onHiddenChange?.(value);
     },
-    [isControlled, props.onHiddenChange]
+    [isControlled, props.onHiddenChange],
   );
 
   if (isControlled) {
@@ -106,7 +108,7 @@ const useIsHiddenState = (props: SpoilerProps): [boolean, (v: boolean) => void] 
  */
 const useRevealOn = (
   revealOn: SpoilerProps["revealOn"],
-  state: [boolean, (v: boolean) => void]
+  state: [boolean, (v: boolean) => void],
 ) => {
   const [value, setValue] = state;
 
@@ -169,6 +171,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     density,
     noiseFadeDuration,
     fallback,
+    forceFallback = false,
 
     // inherited props
     className,
@@ -209,8 +212,20 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
       mimicWords,
       accentColor: painterColor,
       fallback: fallbackStyle,
+      forceFallback,
     };
-  }, [fps, gap, density, mimicWords, painterColor, fallback, isDarkTheme, boundsW, boundsH]);
+  }, [
+    fps,
+    gap,
+    density,
+    mimicWords,
+    painterColor,
+    fallback,
+    isDarkTheme,
+    boundsW,
+    boundsH,
+    forceFallback,
+  ]);
 
   const [painterOptionsOnInit] = useState(() => painterOptions);
 

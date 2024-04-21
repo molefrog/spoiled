@@ -14,6 +14,7 @@ export interface SpoilerPainterOptions {
   readonly mimicWords?: boolean;
   readonly accentColor?: string;
   readonly fallback?: string | false;
+  readonly forceFallback?: boolean;
 }
 
 export const DEFAULT_OPTIONS = {
@@ -54,6 +55,8 @@ const prefersReducedMotion =
 class SpoilerPainter {
   readonly el: HTMLElement;
   maxFPS: number = DEFAULT_FPS;
+
+  #forceFallback: boolean = false;
 
   constructor(el: HTMLElement, options: CtorOptions = {}) {
     this.el = el;
@@ -100,6 +103,7 @@ class SpoilerPainter {
     mimicWords = DEFAULT_OPTIONS.mimicWords,
     density = DEFAULT_OPTIONS.density,
     fallback = DEFAULT_OPTIONS.fallback,
+    forceFallback,
     accentColor,
   }: SpoilerPainterOptions = {}) {
     if (this.#wasDestroyed) {
@@ -108,8 +112,9 @@ class SpoilerPainter {
 
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
+    this.#forceFallback = Boolean(forceFallback);
 
-    if (!isCSSHoudiniSupported) {
+    if (!isCSSHoudiniSupported || forceFallback) {
       this.el.style.setProperty("--fallback", fallback || "initial");
       return;
     }
@@ -128,13 +133,13 @@ class SpoilerPainter {
         this.useBackgroundStyle(
           Math.min(rect.width, BLOCK_MAX_TILE),
           Math.min(rect.height, BLOCK_MAX_TILE),
-          { tile: true }
+          { tile: true },
         );
       } else {
         // we can draw the whole block without tiling meaning we can use gaps
         // cap the gap value, so that it looks nice on smaller elements
         const capGap = Math.floor(
-          Math.min(Number(gap), rect.width / GAP_RATIO, rect.height / GAP_RATIO)
+          Math.min(Number(gap), rect.width / GAP_RATIO, rect.height / GAP_RATIO),
         );
 
         this.el.style.setProperty("--gap", `${capGap}px ${capGap}px`);
@@ -201,7 +206,7 @@ class SpoilerPainter {
   hide({ animate = true }: TransitionOptions = {}) {
     this.#isHidden = true;
 
-    if (!isCSSHoudiniSupported) {
+    if (!isCSSHoudiniSupported || this.#forceFallback) {
       this.el.style.setProperty("background", "var(--fallback)");
       return;
     }
@@ -216,7 +221,7 @@ class SpoilerPainter {
   reveal({ animate = true }: TransitionOptions = {}) {
     this.#isHidden = false;
 
-    if (!isCSSHoudiniSupported) {
+    if (!isCSSHoudiniSupported || this.#forceFallback) {
       this.el.style.removeProperty("background");
       return;
     }
@@ -316,7 +321,7 @@ class SpoilerPainter {
       {
         root: null, // observes the element in the viewport
         threshold: 0.1, // trigger if 10% of the element is visible
-      }
+      },
     );
 
     this.#observer.observe(this.el);
@@ -334,7 +339,7 @@ declare global {
 if (isCSSHoudiniSupported) {
   // register paint inline worklet
   CSS.paintWorklet.addModule(
-    URL.createObjectURL(new Blob([workletSource], { type: "application/javascript" }))
+    URL.createObjectURL(new Blob([workletSource], { type: "application/javascript" })),
   );
 }
 
