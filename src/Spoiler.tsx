@@ -48,8 +48,6 @@ export type SpoilerProps = {
   theme?: "system" | "light" | "dark";
 
   noiseFadeDuration?: number;
-
-  forceFallback?: boolean;
 } & Omit<JSX.IntrinsicElements["span"], "style"> &
   AsChildProps &
   Omit<SpoilerPainterOptions, "accentColor">;
