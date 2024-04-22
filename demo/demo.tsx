@@ -175,7 +175,10 @@ const App = () => {
           <div className="mx-4 mt-16 rounded-2xl bg-amber-50 p-6 text-center text-sm/5 text-slate-800 dark:text-neutral-400">
             As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a
             fallback though,{" "}
-            <Spoiler forceFallback> so here is what it will look like in Safari.</Spoiler>
+            <Spoiler forceFallback theme="light">
+              {" "}
+              so here is what it will look like in Safari.
+            </Spoiler>
           </div>
         </div>
       </main>
