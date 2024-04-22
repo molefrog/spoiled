@@ -88,8 +88,8 @@ const App = () => {
           </MessageBubble>
 
           {/** features */}
-          <MessageBubble className="prose text-base/6">
-            <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
+          <MessageBubble className="prose divide-y divide-neutral-200 text-base/6">
+            <div className="py-4 first:pt-0 last:pb-0">
               Uses{" "}
               <a href="https://developer.mozilla.org/en-US/docs/Web/API/CSS_Painting_API">
                 CSS Painting API
@@ -97,7 +97,7 @@ const App = () => {
               for realistic rendering of inline elements. Comes with a fallback
             </div>
 
-            <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
+            <div className="py-4 first:pt-0 last:pb-0">
               Accessible, supports{" "}
               <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#theming">
                 light/dark/system
@@ -105,11 +105,11 @@ const App = () => {
               mode
             </div>
 
-            <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
+            <div className="py-4 first:pt-0 last:pb-0">
               Customizable FPS, density, color, noise animation, content transitions and more
             </div>
 
-            <div className="border-b border-neutral-200 py-4 first:pt-0 last:border-b-0 last:pb-0">
+            <div className="py-4 first:pt-0 last:pb-0">
               Comes in{" "}
               <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#styling">
                 styled or unstyled
