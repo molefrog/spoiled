@@ -1,4 +1,4 @@
-<img src="demo/readme-header.webp" alt="Spoiled demo - hide your precious secrets" />
+<img src="demo/assets/readme-header.webp" alt="Spoiled demo - hide your precious secrets" />
 
 ## Realistic `<Spoiler />` component for React
 
@@ -13,8 +13,10 @@ hidden until revealed.
 - Respects `prefers-reduced-motion`;
 - Control the performance: **FPS**, **density**, **color**, and more;
 
-> CSS Painting API is still [unsupported](https://caniuse.com/css-paint-api) in Firefox and Safari. We provide a static fallback image for these browsers,
-> that you can customise via the `fallback` prop. Also, there is a [polyfill](https://github.com/GoogleChromeLabs/css-paint-polyfill) available.
+> CSS Painting API is still [unsupported](https://caniuse.com/css-paint-api) in Firefox and Safari.
+> We provide a static fallback image for these browsers, that you can customise via the `fallback`
+> prop. Also, there is a [polyfill](https://github.com/GoogleChromeLabs/css-paint-polyfill)
+> available.
 
 ### How to use?
 
