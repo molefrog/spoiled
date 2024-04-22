@@ -8,7 +8,7 @@ import { highlight } from "sugar-high";
 
 import "./demo.css";
 
-const MessageBubble = ({ children, className }) => {
+const MessageBubble = ({ children, className }: React.ComponentProps<"div">) => {
   return (
     <div
       className={`${className} my-5 rounded-2xl border border-neutral-200 bg-white px-4 py-5 shadow-lg sm:my-8 sm:px-6 sm:shadow-2xl dark:shadow-slate-800`}
@@ -150,7 +150,7 @@ const App = () => {
 
           {/** block elements */}
           <MessageBubble className="prose text-base/6">
-            <h4 className="mb-2 font-semibold">⌘ Works with block elements too</h4>
+            <h4 className="mb-2 font-semibold">⌘ Hide block elements under a spoiler</h4>
 
             <Spoiler fps={20} tagName="div" className="not-pros" theme="light">
               <img
@@ -166,9 +166,13 @@ const App = () => {
               </a>
               , to customise the wrapper to hide block elements.
             </p>
+
+            <CodeHighlight className="bg-gray-50 text-gray-900 shadow-inner">{`<Spoiler tagName="div">
+  <img />
+</Spoiler>`}</CodeHighlight>
           </MessageBubble>
 
-          <div className="rounded-2xl px-6 py-2 text-sm/5 text-neutral-500 dark:text-neutral-400">
+          <div className="mx-4 mt-16 rounded-2xl bg-amber-50 p-6 text-center text-sm/5 text-slate-800 dark:text-neutral-400">
             As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a
             fallback though,{" "}
             <Spoiler forceFallback> so here is what it will look like in Safari.</Spoiler>
@@ -176,7 +180,7 @@ const App = () => {
         </div>
       </main>
 
-      <div className="pb-4 pt-14 text-center text-xs sm:fixed sm:bottom-4 sm:right-6 sm:max-w-60 sm:pb-0 sm:text-right">
+      <div className="px-4 pb-4 pt-14 text-center text-xs sm:fixed sm:bottom-4 sm:right-6 sm:max-w-60 sm:px-0 sm:pb-0 sm:text-right">
         <div className="text-sm dark:text-neutral-300">
           made by{" "}
           <a href="https://molefrog.com" className="font-semibold">
