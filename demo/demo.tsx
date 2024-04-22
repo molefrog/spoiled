@@ -82,7 +82,7 @@ const App = () => {
                 href="https://github.com/molefrog/spoiled"
                 className="f w-full rounded-lg border-4 border-transparent bg-zinc-800 px-4 py-2 text-center font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
               >
-                Install & Docs →
+                GitHub & Docs →
               </a>
             </div>
           </MessageBubble>
