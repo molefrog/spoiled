@@ -1,10 +1,11 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
+import { highlight } from "sugar-high";
+import GitHubButton from "react-github-btn";
 
 import { Spoiler } from "../src/index";
 import { GIFMaker } from "./GIFFallbackMaker";
-import { highlight } from "sugar-high";
 
 import "./demo.css";
 
@@ -37,6 +38,19 @@ const App = () => {
 
   return (
     <>
+      <div className="group absolute right-2 top-4 z-50 block p-1 sm:fixed sm:right-5">
+        <GitHubButton
+          href="https://github.com/molefrog/spoiled"
+          data-color-scheme="no-preference: light; light: light; dark: dark;"
+          data-size="large"
+          data-text="Star"
+          data-show-count="true"
+          aria-label="Star molefrog/spoiled on GitHub"
+        >
+          Star
+        </GitHubButton>
+      </div>
+
       <main className="mx-auto max-w-[420px] px-2 py-32">
         {false && <GIFMaker />}
 
