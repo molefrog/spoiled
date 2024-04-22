@@ -41,7 +41,12 @@ const App = () => {
         {false && <GIFMaker />}
 
         <header className="mb-14 text-center">
-          <h1 className="mb-2 text-lg font-semibold dark:text-slate-100">spoiled</h1>
+          <div className="mx-auto mb-4 h-[10] w-[186] rounded-full bg-slate-100"></div>
+
+          <div className="masked-logo relative mx-auto mb-4 aspect-[2/1] max-w-64">
+            <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
+          </div>
+
           <h2 className="text-xl sm:px-8 dark:text-slate-100">
             <Spoiler
               hidden={!timeBased}
@@ -51,9 +56,7 @@ const App = () => {
               aria-label="Spoiler component for React"
             >
               Hide your precious secrets. Realistic{" "}
-              <code className="rounded bg-stone-100 px-0.5 py-0.5 text-base tracking-tight text-slate-900">
-                {"<Spoiler />"}
-              </code>{" "}
+              <code className="roundedpx-0.5 py-0.5 text-base tracking-tight">{"<Spoiler />"}</code>{" "}
               component for React, powered by CSS Houdini
             </Spoiler>
           </h2>

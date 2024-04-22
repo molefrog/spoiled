@@ -14,6 +14,13 @@
   --sh-jsxliterals: #7960a9; /* Muted Purple */
 }
 
+.masked-logo {
+  mask-image: url("./assets/logo.svg");
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+}
+
 .placeholder {
   margin: 64px 0;
 }

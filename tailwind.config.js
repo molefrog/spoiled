@@ -5,7 +5,7 @@ export default {
   content: ["./demo/index.html", "./demo/**/*.{js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
-      sans: ["Inter", "system-ui", "sans-serif"],
+      sans: ["SF Pro", "Inter", "system-ui", "sans-serif"],
     },
     extend: {},
   },
