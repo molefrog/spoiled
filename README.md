@@ -1,4 +1,4 @@
-<img src="demo/assets/readme-header.webp" alt="Spoiled demo - hide your precious secrets" />
+<img src="web/assets/readme-header.webp" alt="Spoiled demo - hide your precious secrets" />
 
 ## Realistic `<Spoiler />` component for React
 
