@@ -76,7 +76,7 @@
   "postcss": {
     "plugins": {
       "tailwindcss": {
-        "config": "./demo/tailwind.config.js"
+        "config": "./web/tailwind.config.js"
       },
       "autoprefixer": {}
     }

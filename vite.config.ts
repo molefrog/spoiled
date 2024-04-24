@@ -46,7 +46,7 @@ const buildLibraryConfig: UserConfig = {
 };
 
 const devConfig: UserConfig = {
-  root: "demo",
+  root: "web",
 
   test: {
     root: "src",

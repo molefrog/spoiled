@@ -2,7 +2,7 @@ import typography from "@tailwindcss/typography";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./demo/index.html", "./demo/**/*.{js,ts,jsx,tsx}"],
+  content: ["./web/index.html", "./web/**/*.{js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
       sans: ["SF Pro", "Inter", "system-ui", "sans-serif"],
