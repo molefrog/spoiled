@@ -25,6 +25,12 @@ Install the package, requires React 18:
 ```jsx
 npm i spoiled
 ```
+```jsx
+pnpm add spoiled
+```
+```jsx
+yarn add spoiled
+```
 
 Wrap your text in a spoiler, so the plot twists stay hidden:
 
