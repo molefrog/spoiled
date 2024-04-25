@@ -25,6 +25,7 @@ Install the package, requires React 18:
 ```jsx
 npm i spoiled
 ```
+Or use your package manager of choice:
 ```jsx
 pnpm add spoiled
 ```
