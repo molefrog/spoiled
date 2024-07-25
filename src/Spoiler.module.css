@@ -10,7 +10,7 @@
 }
 
 /**
- * Animated content transitions: 
+ * Animated content transitions:
  * Fade In/Out via opacity
  */
 
@@ -18,12 +18,16 @@
   --hide-transition: 0.2s ease-out;
   --reveal-transition: 0.5s ease-out;
 
-  transition: opacity var(--reveal-transition), filter var(--reveal-transition);
+  transition:
+    opacity var(--reveal-transition),
+    filter var(--reveal-transition);
 }
 
 .spoiler.hidden > .transition.fade {
   opacity: 0;
-  transition: opacity var(--hide-transition), filter var(--hide-transition);
+  transition:
+    opacity var(--hide-transition),
+    filter var(--hide-transition);
   filter: blur(0.5px);
 }
 
@@ -41,7 +45,24 @@
 @property --iris-radius {
   syntax: "<length> | <percentage>";
   inherits: false;
-  initial-value: 50px;
+  initial-value: 16px;
+}
+
+.spoiler > .transition.iris {
+  --hide-duration: 0.15s;
+  --reveal-duration: 0.35s;
+}
+
+.spoiler.hidden > .transition.iris {
+  --iris-gradient-length: 0%;
+  --iris-radius: 0px;
+
+  opacity: 0;
+
+  /* quickly hide, animate opacity only */
+  transition:
+    --iris-gradient-length 0s linear var(--hide-duration),
+    opacity var(--hide-duration) ease-out;
 }
 
 .transition.iris {
@@ -51,23 +72,13 @@
       transparent calc(var(--iris-gradient-length) + var(--iris-radius))
     )
     no-repeat center;
-  transition: --iris-gradient-length 0.3s ease-out, opacity 0.5s ease-out;
+  transition:
+    --iris-gradient-length var(--reveal-duration) ease-out,
+    opacity 0.5s ease-out;
 }
 
-.spoiler.hidden > .transition.iris {
-  --hide-duration: 0.15s;
-  opacity: 0;
-
-  --iris-gradient-length: 0%;
-  --iris-radius: 0px;
-
-  /* quickly hide, animate opacity only */
-  transition: --iris-gradient-length 0s linear var(--hide-duration),
-    opacity var(--hide-duration) ease-out;
-}
-
-/* 
-  it is a hack to ensure the mask is fully removed if max mask-size isn't enough to 
+/*
+  it is a hack to ensure the mask is fully removed if max mask-size isn't enough to
   fully cover the element
  */
 @keyframes remove-mask {
@@ -77,5 +88,5 @@
 }
 
 .spoiler:not(.hidden) > .transition.iris {
-  animation: 0s linear 0.3s 1 forwards remove-mask;
+  animation: 0s linear var(--reveal-duration) 1 forwards remove-mask;
 }
