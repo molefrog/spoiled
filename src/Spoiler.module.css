@@ -50,7 +50,7 @@
 
 .spoiler > .transition.iris {
   --hide-duration: 0.15s;
-  --reveal-duration: 0.35s;
+  --reveal-duration: 0.3s;
 }
 
 .spoiler.hidden > .transition.iris {
@@ -58,10 +58,12 @@
   --iris-radius: 0px;
 
   opacity: 0;
+  filter: blur(1px);
 
   /* quickly hide, animate opacity only */
   transition:
     --iris-gradient-length 0s linear var(--hide-duration),
+    filter 0s linear var(--hide-duration),
     opacity var(--hide-duration) ease-out;
 }
 
@@ -74,7 +76,8 @@
     no-repeat center;
   transition:
     --iris-gradient-length var(--reveal-duration) ease-out,
-    opacity 0.5s ease-out;
+    opacity var(--reveal-duration) ease-out,
+    filter var(--reveal-duration) ease-out;
 }
 
 /*
