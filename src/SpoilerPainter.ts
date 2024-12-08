@@ -50,7 +50,9 @@ const GAP_RATIO = 8.0;
 
 // Check if the user has requested reduced motion
 const prefersReducedMotion =
-  "matchMedia" in globalThis && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  "matchMedia" in globalThis &&
+  typeof globalThis.matchMedia === "function" &&
+  matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 class SpoilerPainter {
   readonly el: HTMLElement;
