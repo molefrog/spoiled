@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
-const supportsMatchMedia = "matchMedia" in globalThis;
+const supportsMatchMedia =
+  "matchMedia" in globalThis && typeof globalThis.matchMedia === "function";
 
 /**
  * This hook calls `matchMedia` and updates when its value changes
@@ -8,7 +9,7 @@ const supportsMatchMedia = "matchMedia" in globalThis;
 export function useMatchMedia(query: string, ssrValue: boolean = false): boolean {
   const mediaQueryList = useMemo(
     () => (supportsMatchMedia ? globalThis.matchMedia(query) : undefined),
-    [query]
+    [query],
   );
 
   const subscribe = useCallback(
@@ -21,12 +22,12 @@ export function useMatchMedia(query: string, ssrValue: boolean = false): boolean
       mediaQueryList.addEventListener("change", callback);
       return () => mediaQueryList.removeEventListener("change", callback);
     },
-    [mediaQueryList]
+    [mediaQueryList],
   );
 
   return useSyncExternalStore(
     subscribe,
     () => mediaQueryList?.matches ?? false,
-    () => ssrValue // value on the server
+    () => ssrValue, // value on the server
   );
 }
