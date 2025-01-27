@@ -41,8 +41,8 @@
     "prepublishOnly": "tsc && npm run bundle"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.12",
@@ -50,8 +50,8 @@
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
     "@types/node": "^20.11.20",
-    "@types/react": "^18.2.57",
-    "@types/react-dom": "^18.2.19",
+    "@types/react": "^18.2.57 || ^19.0.0",
+    "@types/react-dom": "^18.2.19 || ^19.0.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
     "gif.js": "^0.2.0",
