@@ -83,8 +83,6 @@ const App = () => {
         {false && <GIFMaker />}
 
         <header className="mb-14 text-center">
-          <div className="mx-auto mb-4 h-[10] w-[186] rounded-full bg-slate-100"></div>
-
           <div className="masked-logo aspect-2/1 relative mx-auto mb-4 max-w-64">
             <div className="bg-linear-to-b absolute inset-0 from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
           </div>
