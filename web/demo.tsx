@@ -12,10 +12,38 @@ import "./demo.css";
 const MessageBubble = ({ children, className }: React.ComponentProps<"div">) => {
   return (
     <div
-      className={`${className} my-5 rounded-2xl border border-neutral-200 bg-white px-4 py-5 shadow-lg sm:my-8 sm:px-6 sm:shadow-2xl dark:shadow-slate-800`}
+      className={`${className} shadow-elevation-medium my-4 rounded-2xl bg-white px-4 py-5 sm:my-6 sm:px-6`}
     >
       {children}
     </div>
+  );
+};
+
+const WavingHandIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M11.9005 5.70103C12.1743 4.96757 11.7865 4.15657 11.0342 3.88961C10.2819 3.62265 9.4501 4.00083 9.1763 4.73429L6.5443 11.7848L5.60953 9.82225C5.19966 8.96175 4.11475 8.64198 3.28412 9.13687C2.64855 9.51553 2.35476 10.266 2.56985 10.9613L3.96974 15.4867C4.28743 16.5137 4.44628 17.0272 4.70166 17.4731C5.09127 18.1534 5.64795 18.7281 6.32165 19.1455C6.76324 19.4191 7.27913 19.6022 8.31092 19.9683C10.2783 20.6665 11.262 21.0156 12.1549 20.9995C13.5203 20.9748 14.812 20.3851 15.709 19.377C16.2956 18.7177 16.6547 17.7556 17.373 15.8314L19.4122 10.372C19.686 9.63852 19.2981 8.82752 18.5458 8.56056C17.7936 8.2936 16.9618 8.67178 16.688 9.40524M11.9005 5.70103L12.5616 3.93029C12.8354 3.19683 13.6672 2.81866 14.4194 3.08562C15.1717 3.35257 15.5596 4.16357 15.2858 4.89704L14.6248 6.66777M11.9005 5.70103L10.4132 9.68518M14.6248 6.66777C14.8986 5.93431 15.7304 5.55613 16.4826 5.82309C17.2349 6.09005 17.6228 6.90105 17.349 7.63451L16.688 9.40524M14.6248 6.66777L13.1374 10.6519M16.688 9.40524L15.8617 11.6187"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M21.3307 14C21.877 15.6354 21.0574 17.4263 19.5 18"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 };
 
@@ -57,11 +85,11 @@ const App = () => {
         <header className="mb-14 text-center">
           <div className="mx-auto mb-4 h-[10] w-[186] rounded-full bg-slate-100"></div>
 
-          <div className="masked-logo relative mx-auto mb-4 aspect-[2/1] max-w-64">
-            <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
+          <div className="masked-logo aspect-2/1 relative mx-auto mb-4 max-w-64">
+            <div className="bg-linear-to-b absolute inset-0 from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
           </div>
 
-          <h2 className="text-xl sm:px-8 dark:text-slate-100">
+          <h2 className="text-2xl font-medium tracking-tight  dark:text-slate-100">
             <Spoiler
               hidden={!timeBased}
               noiseFadeDuration={2}
@@ -76,7 +104,7 @@ const App = () => {
           </h2>
         </header>
 
-        <div>
+        <div className="pt-2">
           {/** CTA */}
           <MessageBubble>
             <div className="prose mb-5 text-center text-base/6">
@@ -94,7 +122,7 @@ const App = () => {
             <div className="flex justify-center">
               <a
                 href="https://github.com/molefrog/spoiled"
-                className="f w-full rounded-lg border-4 border-transparent bg-zinc-800 px-4 py-2 text-center font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
+                className="f w-full rounded-xl border-4 border-transparent bg-zinc-800 px-4 py-2 text-center font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
               >
                 GitHub & Docs →
               </a>
@@ -186,7 +214,8 @@ const App = () => {
 </Spoiler>`}</CodeHighlight>
           </MessageBubble>
 
-          <div className="mx-4 mt-16 rounded-2xl bg-amber-50 p-6 text-center text-sm/5 text-slate-800 dark:text-neutral-400">
+          <div className="shadow-elevation-low mt-16 rounded-lg border border-zinc-200 bg-white px-7 pb-11 pt-8 text-center text-sm/5 font-medium text-neutral-800">
+            <WavingHandIcon className="mx-auto mb-3 text-neutral-500" />
             As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a
             fallback though,{" "}
             <Spoiler forceFallback theme="light">

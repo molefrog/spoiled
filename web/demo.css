@@ -1,8 +1,35 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root {
+  --shadow-color: 220deg 5% 68%;
+  --shadow-elevation-low:
+    0.1px 0.3px 0.3px hsl(var(--shadow-color) / 0.31),
+    0.1px 0.5px 0.5px -1.5px hsl(var(--shadow-color) / 0.27),
+    0.3px 1.2px 1.3px -3px hsl(var(--shadow-color) / 0.24);
+  --shadow-elevation-medium:
+    0.1px 0.3px 0.3px hsl(var(--shadow-color) / 0.32),
+    0.2px 0.9px 1px -1px hsl(var(--shadow-color) / 0.29),
+    0.6px 2.4px 2.6px -2px hsl(var(--shadow-color) / 0.27),
+    1.6px 5.9px 6.4px -3px hsl(var(--shadow-color) / 0.24);
+  --shadow-elevation-high:
+    0.1px 0.3px 0.3px hsl(var(--shadow-color) / 0.3),
+    0.4px 1.3px 1.4px -0.4px hsl(var(--shadow-color) / 0.29),
+    0.7px 2.4px 2.6px -0.9px hsl(var(--shadow-color) / 0.27),
+    1.1px 4.1px 4.5px -1.3px hsl(var(--shadow-color) / 0.26),
+    1.8px 6.8px 7.4px -1.7px hsl(var(--shadow-color) / 0.25),
+    2.9px 10.9px 11.8px -2.1px hsl(var(--shadow-color) / 0.24),
+    4.5px 16.9px 18.4px -2.6px hsl(var(--shadow-color) / 0.22),
+    6.8px 25.2px 27.4px -3px hsl(var(--shadow-color) / 0.21);
+}
+
+@theme {
+  --font-family-sans: "Inter Variable", "Inter", "SF Pro", system-ui, sans-serif;
+  --shadow-elevation-low: var(--shadow-elevation-low);
+  --shadow-elevation-medium: var(--shadow-elevation-medium);
+  --shadow-elevation-high: var(--shadow-elevation-high);
+}
 
 :root {
   --sh-class: #383a42; /* Soft Black */

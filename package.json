@@ -45,7 +45,8 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.12",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/typography": "^0.5.0-alpha.3",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
@@ -64,7 +65,7 @@
     "react-github-btn": "^1.4.0",
     "rollup-preserve-directives": "^1.1.1",
     "sugar-high": "^0.6.0",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^4.0.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vite-plugin-dts": "^4.3.0",
@@ -75,7 +76,7 @@
   },
   "postcss": {
     "plugins": {
-      "tailwindcss": {
+      "@tailwindcss/postcss": {
         "config": "./web/tailwind.config.js"
       },
       "autoprefixer": {}
