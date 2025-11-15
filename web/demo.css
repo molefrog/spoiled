@@ -72,10 +72,10 @@
 @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
   @keyframes parallax-scroll {
     from {
-      transform: translateY(0px);
+      transform: perspective(500px) translateY(0px) scale(1) rotateX(0deg);
     }
     to {
-      transform: translateY(-80px);
+      transform: perspective(500px) translateY(-80px) scale(1.05) rotateX(1deg);
     }
   }
 
@@ -84,4 +84,3 @@
     animation-timeline: scroll();
   }
 }
-
