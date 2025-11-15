@@ -141,9 +141,7 @@ const App = () => {
             </div>
 
             <div className="flex justify-center">
-              <DocsButton href="https://github.com/molefrog/spoiled">
-                GitHub & Docs →
-              </DocsButton>
+              <DocsButton href="https://github.com/molefrog/spoiled">GitHub & Docs →</DocsButton>
             </div>
           </MessageBubble>
 
@@ -252,7 +250,7 @@ const App = () => {
           </a>
         </div>
 
-        <div className="text-xs font-medium text-balance text-neutral-900 dark:text-zinc-500">
+        <div className="text-xs font-medium text-balance text-zinc-700 dark:text-zinc-500">
           we don't guarantee that the secrets will stay hidden, use at your own risk
         </div>
       </div>
