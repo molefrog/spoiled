@@ -68,7 +68,7 @@ const App = () => {
   useEffect(() => {
     const int = setInterval(() => {
       setTimeBased((prev) => !prev);
-    }, 2000);
+    }, 3000);
 
     return () => {
       clearInterval(int);
@@ -110,16 +110,20 @@ const App = () => {
             <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
           </div>
 
-          <h2 className="text-2xl font-medium tracking-tight dark:text-slate-100">
+          <h2 className="text-2xl font-semibold tracking-tight dark:text-slate-100">
             <Spoiler
               hidden={!timeBased}
               noiseFadeDuration={2}
-              density={0.2}
+              density={0.25}
               className="header-text"
               aria-label="Spoiler component for React"
             >
-              Hide your precious secrets. Realistic{" "}
-              <code className="roundedpx-0.5 py-0.5 text-base tracking-tight">{"<Spoiler />"}</code>{" "}
+              Hide your precious secrets.
+              <br />
+              Realistic{" "}
+              <code className="roundedpx-0.5 mx-1 py-0.5 text-xl tracking-tight">
+                {"<Spoiler />"}
+              </code>{" "}
               component for React, powered by CSS Houdini
             </Spoiler>
           </h2>
@@ -230,14 +234,11 @@ const App = () => {
 </Spoiler>`}</CodeHighlight>
           </MessageBubble>
 
-          <div className="shadow-elevation-low mt-16 rounded-lg border border-zinc-200 bg-white px-7 pt-8 pb-11 text-center text-sm/5 font-medium text-neutral-800">
-            <WavingHandIcon className="mx-auto mb-3 text-neutral-500" />
+          <div className="shadow-elevation-low mt-16 rounded-xl bg-neutral-900/10 px-7 pt-5 pb-6 text-center text-sm/5 font-medium text-neutral-800 backdrop-blur-xs dark:text-neutral-200">
+            <WavingHandIcon className="mx-auto mb-3 text-neutral-600 dark:text-neutral-300" />
             As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a
             fallback though,{" "}
-            <Spoiler forceFallback theme="light">
-              {" "}
-              so here is what it will look like in Safari.
-            </Spoiler>
+            <Spoiler forceFallback> so here is what it will look like in Safari.</Spoiler>
           </div>
         </div>
       </main>
