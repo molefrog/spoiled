@@ -23,7 +23,7 @@ const DocsButton = ({ href, children }: { href: string; children: React.ReactNod
   return (
     <a
       href={href}
-      className="relative flex h-12 w-full items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 px-5 font-medium text-zinc-100 shadow-[0_1px_0_0_rgba(0,0,0,0.05),0_1px_3px_0_rgba(0,0,0,0.1),inset_0_1px_0_0_rgba(255,255,255,0.5)] transition-colors duration-200 hover:bg-zinc-700 dark:shadow-[0_1px_0_0_rgba(0,0,0,0.5),0_2px_4px_0_rgba(0,0,0,0.3),inset_0_1px_0_0_rgba(255,255,255,0.1)]"
+      className="user-select-none relative flex h-12 w-full items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 px-5 font-medium text-zinc-100 shadow-[0_1px_0_0_rgba(0,0,0,0.05),0_1px_3px_0_rgba(0,0,0,0.1),inset_0_1px_0_0_rgba(255,255,255,0.5)] drop-shadow-xl transition-all duration-150 hover:bg-zinc-700 active:translate-y-px active:scale-99"
     >
       {children}
     </a>
