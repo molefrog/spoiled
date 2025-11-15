@@ -19,6 +19,17 @@ const MessageBubble = ({ children, className }: React.ComponentProps<"div">) => 
   );
 };
 
+const DocsButton = ({ href, children }: { href: string; children: React.ReactNode }) => {
+  return (
+    <a
+      href={href}
+      className="relative flex h-12 w-full items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 px-5 font-medium text-zinc-100 shadow-[0_1px_0_0_rgba(0,0,0,0.05),0_1px_3px_0_rgba(0,0,0,0.1),inset_0_1px_0_0_rgba(255,255,255,0.5)] transition-colors duration-200 hover:bg-zinc-700 dark:shadow-[0_1px_0_0_rgba(0,0,0,0.5),0_2px_4px_0_rgba(0,0,0,0.3),inset_0_1px_0_0_rgba(255,255,255,0.1)]"
+    >
+      {children}
+    </a>
+  );
+};
+
 const WavingHandIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
@@ -130,12 +141,9 @@ const App = () => {
             </div>
 
             <div className="flex justify-center">
-              <a
-                href="https://github.com/molefrog/spoiled"
-                className="f w-full rounded-xl border-4 border-transparent bg-zinc-800 px-4 py-2 text-center font-medium text-zinc-50 hover:border-blue-500 hover:bg-zinc-900"
-              >
+              <DocsButton href="https://github.com/molefrog/spoiled">
                 GitHub & Docs →
-              </a>
+              </DocsButton>
             </div>
           </MessageBubble>
 
