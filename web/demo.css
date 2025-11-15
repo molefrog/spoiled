@@ -68,3 +68,20 @@
 
   background: repeat top left / var(--w) var(--w) var(--gif);
 }
+
+@supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+  @keyframes parallax-scroll {
+    from {
+      transform: translateY(0px);
+    }
+    to {
+      transform: translateY(-80px);
+    }
+  }
+
+  .parallax {
+    animation: parallax-scroll linear forwards;
+    animation-timeline: scroll();
+  }
+}
+

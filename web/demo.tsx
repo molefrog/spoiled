@@ -66,7 +66,19 @@ const App = () => {
 
   return (
     <>
-      <div className="group absolute right-2 top-4 z-50 block p-1 sm:fixed sm:right-5">
+      <img
+        src="./bg-dark.webp"
+        alt="page background image for dark mode"
+        className="parallax fixed -top-[10%] right-0 -bottom-[10%] left-0 -z-10 h-[120%] w-full object-cover opacity-0 brightness-50 transition-opacity duration-500 dark:opacity-100"
+        aria-hidden="true"
+      />
+      <img
+        src="./bg-light.webp"
+        alt="page background image for light mode"
+        className="parallax fixed -top-[10%] right-0 -bottom-[20%] left-0 -z-10 h-[130%] w-full object-cover opacity-100 brightness-85 transition-opacity duration-500 dark:opacity-0"
+        aria-hidden="true"
+      />
+      <div className="group absolute top-4 right-2 z-50 block p-1 sm:fixed sm:right-5">
         <GitHubButton
           href="https://github.com/molefrog/spoiled"
           data-color-scheme="no-preference: light; light: light; dark: dark;"
@@ -79,15 +91,15 @@ const App = () => {
         </GitHubButton>
       </div>
 
-      <main className="mx-auto max-w-[420px] px-2 py-32">
+      <main className="mx-auto max-w-[420px] px-2 pt-32 pb-64">
         {false && <GIFMaker />}
 
         <header className="mb-14 text-center">
-          <div className="masked-logo aspect-2/1 relative mx-auto mb-4 max-w-64">
-            <div className="bg-linear-to-b absolute inset-0 from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
+          <div className="masked-logo relative mx-auto mb-4 aspect-2/1 max-w-64">
+            <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
           </div>
 
-          <h2 className="text-2xl font-medium tracking-tight  dark:text-slate-100">
+          <h2 className="text-2xl font-medium tracking-tight dark:text-slate-100">
             <Spoiler
               hidden={!timeBased}
               noiseFadeDuration={2}
@@ -212,7 +224,7 @@ const App = () => {
 </Spoiler>`}</CodeHighlight>
           </MessageBubble>
 
-          <div className="shadow-elevation-low mt-16 rounded-lg border border-zinc-200 bg-white px-7 pb-11 pt-8 text-center text-sm/5 font-medium text-neutral-800">
+          <div className="shadow-elevation-low mt-16 rounded-lg border border-zinc-200 bg-white px-7 pt-8 pb-11 text-center text-sm/5 font-medium text-neutral-800">
             <WavingHandIcon className="mx-auto mb-3 text-neutral-500" />
             As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a
             fallback though,{" "}
@@ -224,7 +236,7 @@ const App = () => {
         </div>
       </main>
 
-      <div className="px-4 pb-4 pt-14 text-center text-xs sm:fixed sm:bottom-4 sm:right-6 sm:max-w-60 sm:px-0 sm:pb-0 sm:text-right">
+      <div className="px-4 pt-14 pb-4 text-center text-xs sm:fixed sm:right-6 sm:bottom-4 sm:max-w-60 sm:px-0 sm:pb-0 sm:text-right">
         <div className="text-sm dark:text-neutral-300">
           made by{" "}
           <a href="https://molefrog.com" className="font-semibold">
@@ -232,7 +244,7 @@ const App = () => {
           </a>
         </div>
 
-        <div className="text-balance text-xs text-neutral-500 dark:text-neutral-500">
+        <div className="text-xs font-medium text-balance text-neutral-800 [text-shadow:0_0_1px_rgba(0,0,0,0.1)]">
           we don't guarantee that the secrets will stay hidden, use at your own risk
         </div>
       </div>
