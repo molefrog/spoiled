@@ -37,7 +37,7 @@ export type SpoilerProps = {
   onHiddenChange?: (hidden: boolean) => void;
 
   // customize the tag of the wrapper element
-  tagName?: keyof JSX.IntrinsicElements;
+  tagName?: keyof React.JSX.IntrinsicElements;
 
   // how spoiler content will transition on reveal/hide
   transition?: false | "none" | "fade" | "iris";
@@ -48,7 +48,7 @@ export type SpoilerProps = {
   theme?: "system" | "light" | "dark";
 
   noiseFadeDuration?: number;
-} & Omit<JSX.IntrinsicElements["span"], "style"> &
+} & Omit<React.JSX.IntrinsicElements["span"], "style"> &
   AsChildProps &
   Omit<SpoilerPainterOptions, "accentColor">;
 
@@ -179,7 +179,7 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
   } = props;
 
   const ref = useRef<HTMLElement>(null);
-  const painterRef = useRef<SpoilerPainter>();
+  const painterRef = useRef<SpoilerPainter | undefined>(undefined);
 
   // update whenever the element bounds change by 4px
   const [boundsW, boundsH] = useWatchResize(ref, 4);
@@ -285,5 +285,5 @@ export const Spoiler: React.FC<SpoilerProps> = (props) => {
     className: clx,
     ...useRevealOn(revealOn, state),
     ...elementProps,
-  });
+  } as any);
 };

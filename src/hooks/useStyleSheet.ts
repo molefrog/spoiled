@@ -24,7 +24,7 @@ const styleElementMap: StyleElementMap = new Map();
 /**
  * Injects CSS code into the document's <head>
  */
-export const useStyleSheet = (styles: string | null, nodeRef: RefObject<HTMLElement>): void => {
+export const useStyleSheet = (styles: string | null, nodeRef: RefObject<HTMLElement | null>): void => {
   const [css] = useState(() => styles); // css is constant and can't be changed between renders
   const [parentDocument] = useState(() =>
     /* note: `document` can be `undefined` in some environments like SSR */

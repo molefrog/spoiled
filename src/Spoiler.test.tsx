@@ -90,7 +90,7 @@ describe("Spoiler options", () => {
   it("accepts custom spoiler painter options", () => {
     <Spoiler fps={1}>Hey</Spoiler>;
 
-    // @ts-expect-error unknown option
+    // @ts-expect-error - This should error in TypeScript due to unknown prop
     <Spoiler painterShouldExplode="1">Hey</Spoiler>;
   });
 });

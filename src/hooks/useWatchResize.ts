@@ -25,7 +25,7 @@ const boundingBox = (element: HTMLElement, granularity: number) => {
 
 // Define the hook with TypeScript generics for better ref typing
 export function useWatchResize<T extends HTMLElement>(
-  ref: React.RefObject<T>,
+  ref: React.RefObject<T | null>,
   granularity: number = 4
 ) {
   const [rect, setRect] = useState<readonly [number, number]>(() => {
