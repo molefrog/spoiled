@@ -141,7 +141,7 @@ const App = () => {
                 spoiler markup in Telegram messenger
               </a>
               , spoiled displays an animated cloud of particles over content that should stay
-              confidential (until revealed).
+              confidential (until revealed)
             </div>
 
             <div className="flex justify-center">
@@ -190,7 +190,7 @@ const App = () => {
             <p>
               Now, wrap your text in a spoiler, so that{" "}
               <Spoiler density={0.2} theme={"light"}>
-                all essential plot twists and suprises remain hidden
+                all essential plot twists and surprises remain hidden
               </Spoiler>
             </p>
 
@@ -203,9 +203,9 @@ const App = () => {
 
             <p>
               By default, the spoiler is uncontrolled and will reveal on hover. See how this
-              behaviour{" "}
+              behavior{" "}
               <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#hiding-and-revealing-the-spoiler">
-                can be customised.
+                can be customized.
               </a>
             </p>
           </MessageBubble>
@@ -225,8 +225,8 @@ const App = () => {
               By default, spoiler wraps your content in a <code>{`<span />`}</code>, but you can use{" "}
               <a href="https://github.com/molefrog/spoiled?tab=readme-ov-file#how-to-use">
                 <code>{`tagName`}</code> prop
-              </a>
-              , to customise the wrapper to hide block elements.
+              </a>{" "}
+              to customize the wrapper to hide block elements.
             </p>
 
             <CodeHighlight className="bg-gray-50 text-gray-900 shadow-inner">{`<Spoiler tagName="div">
@@ -236,9 +236,8 @@ const App = () => {
 
           <div className="shadow-elevation-low mt-16 rounded-xl bg-neutral-900/10 px-7 pt-5 pb-6 text-center text-sm/5 font-medium text-neutral-800 backdrop-blur-xs dark:text-neutral-200">
             <WavingHandIcon className="mx-auto mb-3 text-neutral-600 dark:text-neutral-300" />
-            As of 2024, CSS Houdini API is supported by the 70% of the browsers. We do have a
-            fallback though,{" "}
-            <Spoiler forceFallback> so here is what it will look like in Safari.</Spoiler>
+            As of 2024, CSS Houdini API is supported by 70% of browsers. We do have a fallback
+            though, <Spoiler forceFallback> so here is what it will look like in Safari.</Spoiler>
           </div>
         </div>
       </main>
