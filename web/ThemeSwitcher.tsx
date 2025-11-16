@@ -169,7 +169,7 @@ export const ThemeSwitcher = () => {
       onClick={cycleTheme}
       aria-label={getAriaLabel()}
       className={clsx(
-        "flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl transition-all duration-150",
+        "relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl transition-all duration-150",
         themeMode === "dark" && "bg-neutral-300/35",
         themeMode === "light" && "bg-neutral-400/25",
         themeMode === "auto" &&
@@ -178,8 +178,22 @@ export const ThemeSwitcher = () => {
             : "text-neutral-900 hover:bg-neutral-400/25"),
       )}
     >
-      {showMoonIcon && <MoonIcon />}
-      {showSunIcon && <SunIcon />}
+      <div
+        className={clsx(
+          "absolute transition-all duration-300 ease-out",
+          showMoonIcon ? "rotate-0 opacity-100" : "rotate-[35deg] opacity-0"
+        )}
+      >
+        <MoonIcon />
+      </div>
+      <div
+        className={clsx(
+          "absolute transition-all duration-300 ease-out",
+          showSunIcon ? "rotate-0 opacity-100" : "-rotate-[35deg] opacity-0"
+        )}
+      >
+        <SunIcon />
+      </div>
     </button>
   );
 };
