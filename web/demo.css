@@ -2,6 +2,17 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark {
+  :root[data-theme="dark"] & {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) & {
+      @slot;
+    }
+  }
+}
+
 :root {
   --shadow-color: 220deg 5% 68%;
   --shadow-elevation-low:
