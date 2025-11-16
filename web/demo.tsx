@@ -6,6 +6,7 @@ import GitHubButton from "react-github-btn";
 
 import { Spoiler } from "../src/index";
 import { GIFMaker } from "./GIFFallbackMaker";
+import { ThemeSwitcher, useSpoilerTheme } from "./ThemeSwitcher";
 
 import "./demo.css";
 
@@ -64,6 +65,7 @@ const CodeHighlight = ({ children, ...rest }) => {
 
 const App = () => {
   const [timeBased, setTimeBased] = useState(false);
+  const spoilerTheme = useSpoilerTheme();
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -77,6 +79,15 @@ const App = () => {
 
   return (
     <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:bg-zinc-800 focus:px-4 focus:py-2 focus:text-white"
+      >
+        Skip to main content
+      </a>
+      <div className="absolute top-4 left-2 z-50 sm:fixed sm:left-5">
+        <ThemeSwitcher />
+      </div>
       <img
         src="./bg-dark.webp"
         alt=""
@@ -102,7 +113,7 @@ const App = () => {
         </GitHubButton>
       </div>
 
-      <main id="main" className="mx-auto max-w-[420px] px-2 pt-32 pb-64">
+      <main id="main" className="mx-auto max-w-[420px] px-4 pt-32 pb-64">
         {false && <GIFMaker />}
 
         <header className="mb-14 text-center">
@@ -117,6 +128,7 @@ const App = () => {
               density={0.25}
               className="header-text"
               aria-label="Spoiler component for React"
+              theme={spoilerTheme}
             >
               Hide your precious secrets.
               <br />
@@ -238,7 +250,10 @@ const App = () => {
           <div className="shadow-elevation-low mt-16 rounded-xl bg-neutral-900/10 px-7 pt-5 pb-6 text-center text-sm/5 font-medium text-neutral-800 backdrop-blur-xs dark:text-neutral-200">
             <WavingHandIcon className="mx-auto mb-3 text-neutral-600 dark:text-neutral-300" />
             As of 2024, CSS Houdini API is supported by 70% of browsers. We do have a fallback
-            though, <Spoiler forceFallback> so here is what it will look like in Safari.</Spoiler>
+            though,{" "}
+            <Spoiler forceFallback theme={spoilerTheme}>
+              so here is what it will look like in Safari.
+            </Spoiler>
           </div>
         </div>
       </main>
@@ -251,7 +266,7 @@ const App = () => {
           </a>
         </div>
 
-        <div className="text-xs font-medium text-balance text-zinc-700 dark:text-zinc-500">
+        <div className="text-xs font-medium text-balance text-zinc-700 dark:text-zinc-400">
           we don't guarantee that the secrets will stay hidden, use at your own risk
         </div>
       </div>
