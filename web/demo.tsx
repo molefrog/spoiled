@@ -79,13 +79,13 @@ const App = () => {
     <>
       <img
         src="./bg-dark.webp"
-        alt="page background image for dark mode"
+        alt=""
         className="parallax fixed -top-[10%] right-0 -bottom-[10%] left-0 -z-10 h-[120%] w-full object-cover opacity-0 brightness-50 transition-opacity duration-500 dark:opacity-100"
         aria-hidden="true"
       />
       <img
         src="./bg-light.webp"
-        alt="page background image for light mode"
+        alt=""
         className="parallax fixed -top-[10%] right-0 -bottom-[20%] left-0 -z-10 h-[130%] w-full object-cover opacity-100 brightness-85 transition-opacity duration-500 dark:opacity-0"
         aria-hidden="true"
       />
@@ -102,7 +102,7 @@ const App = () => {
         </GitHubButton>
       </div>
 
-      <main className="mx-auto max-w-[420px] px-2 pt-32 pb-64">
+      <main id="main" className="mx-auto max-w-[420px] px-2 pt-32 pb-64">
         {false && <GIFMaker />}
 
         <header className="mb-14 text-center">
@@ -110,7 +110,7 @@ const App = () => {
             <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-gray-900 to-slate-800 dark:from-gray-100 dark:via-gray-100 dark:to-slate-400" />
           </div>
 
-          <h2 className="text-2xl font-semibold tracking-tight dark:text-slate-100">
+          <h1 className="text-2xl font-semibold tracking-tight dark:text-slate-100">
             <Spoiler
               hidden={!timeBased}
               noiseFadeDuration={2}
@@ -126,7 +126,7 @@ const App = () => {
               </code>{" "}
               component for React, powered by CSS Houdini
             </Spoiler>
-          </h2>
+          </h1>
         </header>
 
         <div className="pt-2">
@@ -137,6 +137,7 @@ const App = () => {
               <a
                 href="https://telegram.org/blog/reactions-spoilers-translations#spoilers"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 spoiler markup in Telegram messenger
               </a>
@@ -219,7 +220,7 @@ const App = () => {
                 className="w-full"
                 alt="Silly cat playing a piano"
                 src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmZvMDduYWZrcng2eWNyN2F2bnFvdTludXVnb3kxbm5uenBxMGRkdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vFtWp05vBYnMQ/giphy.gif"
-              ></img>
+              />
             </Spoiler>
             <p>
               By default, spoiler wraps your content in a <code>{`<span />`}</code>, but you can use{" "}
