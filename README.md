@@ -7,16 +7,16 @@ Inspired by [Telegram spoilers](https://telegram.org/blog/reactions-spoilers-tra
 hidden until revealed.
 
 - Uses **[CSS Painting API](https://caniuse.com/css-paint-api) (Houdini)** to achive realistic
-  rendering for inline elements. Comes with a static image **fallback**;
+  rendering for inline elements. Comes with an animated canvas **fallback** for browsers without
+  Houdini support;
 - Supports **light/dark/system** mode;
 - Animated **content transitions** (_fade/iris_), or custom;
 - Respects `prefers-reduced-motion`;
 - Control the performance: **FPS**, **density**, **color**, and more;
 
 > CSS Painting API is still [unsupported](https://caniuse.com/css-paint-api) in Firefox and Safari.
-> We provide a static fallback image for these browsers, that you can customise via the `fallback`
-> prop. Also, there is a [polyfill](https://github.com/GoogleChromeLabs/css-paint-polyfill)
-> available.
+> We provide an animated fallback for these browsers. You can still customise the static backup via
+> the `fallback` prop if canvas rendering is unavailable.
 
 ### How to use?
 

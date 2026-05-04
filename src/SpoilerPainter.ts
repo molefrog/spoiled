@@ -1,5 +1,6 @@
 import { colord } from "colord";
 import workletSource from "./worklet.js?raw";
+import { SpoilerPainterFallback } from "./SpoilerPainterFallback";
 
 export const isCSSHoudiniSupported = typeof CSS !== "undefined" && CSS.paintWorklet !== undefined;
 
@@ -58,10 +59,16 @@ class SpoilerPainter {
   readonly el: HTMLElement;
   maxFPS: number = DEFAULT_FPS;
 
+  #fallback: SpoilerPainterFallback;
   #forceFallback: boolean = false;
+  #lastGap: number | boolean = DEFAULT_OPTIONS.gap;
 
   constructor(el: HTMLElement, options: CtorOptions = {}) {
     this.el = el;
+    this.#fallback = new SpoilerPainterFallback(el, {
+      defaultDensity: DEFAULT_OPTIONS.density,
+      defaultGap: DEFAULT_OPTIONS.gap,
+    });
 
     this.#tstop = 0;
     this.update(options);
@@ -80,6 +87,7 @@ class SpoilerPainter {
   destroy() {
     this.#wasDestroyed = true;
     this.stopAnimation();
+    this.#fallback.destroy();
 
     ["background", "--t", "--t-stop", "--fade", "--gap", "--words", "--density"].forEach((prop) => {
       this.el.style.removeProperty(prop);
@@ -115,11 +123,25 @@ class SpoilerPainter {
     // disable animation if the user has requested reduced motion
     this.maxFPS = prefersReducedMotion ? 0 : fps;
     this.#forceFallback = Boolean(forceFallback);
+    this.#lastGap = gap;
+
+    this.el.style.setProperty("--words", String(mimicWords));
+    this.el.style.setProperty("--density", String(density));
+
+    if (accentColor) {
+      const hsl = colord(accentColor).toHsl();
+      this.el.style.setProperty("--accent", `${hsl.h}deg ${hsl.s}% ${hsl.l}%`);
+    } else {
+      this.el.style.removeProperty("--accent");
+    }
 
     if (!isCSSHoudiniSupported || forceFallback) {
       this.el.style.setProperty("--fallback", fallback || "initial");
+      this.#fallback.updateSurface(gap);
       return;
     }
+
+    this.#fallback.destroy();
 
     const isBlockElement = getComputedStyle(this.el).getPropertyValue("display") !== "inline";
     this.useBackgroundStyle("auto", "auto", { tile: false });
@@ -146,28 +168,17 @@ class SpoilerPainter {
 
         this.el.style.setProperty("--gap", `${capGap}px ${capGap}px`);
       }
+
+      return;
     }
 
-    if (!isBlockElement) {
-      const rects = [...this.el.getClientRects()];
-      const heightOfLine = Math.min(...rects.map((r) => r.height));
+    const rects = [...this.el.getClientRects()];
+    const heightOfLine = Math.min(...rects.map((r) => r.height));
 
-      this.useBackgroundStyle(INLINE_MAX_TILE, heightOfLine, { tile: true });
+    this.useBackgroundStyle(INLINE_MAX_TILE, heightOfLine, { tile: true });
 
-      // use top/bottom gaps only
-      const capGap = Math.floor(Math.min(heightOfLine / GAP_RATIO, Number(gap)));
-      this.el.style.setProperty("--gap", `0 ${capGap}px`);
-    }
-
-    this.el.style.setProperty("--words", String(mimicWords));
-    this.el.style.setProperty("--density", String(density));
-
-    if (accentColor) {
-      const hsl = colord(accentColor).toHsl();
-      this.el.style.setProperty("--accent", `${hsl.h}deg ${hsl.s}% ${hsl.l}%`);
-    } else {
-      this.el.style.removeProperty("--accent");
-    }
+    const capGap = Math.floor(Math.min(heightOfLine / GAP_RATIO, Number(gap)));
+    this.el.style.setProperty("--gap", `0 ${capGap}px`);
   }
 
   useBackgroundStyle(ws: string | number, hs: string | number, options?: { tile: boolean }) {
@@ -201,19 +212,18 @@ class SpoilerPainter {
   parseFadeDuration(value: number | boolean | undefined) {
     if (prefersReducedMotion) return 0;
 
-    const duration = value === true ? DEFAULT_FADE_DURATION : Number(value);
-    return duration;
+    return value === true ? DEFAULT_FADE_DURATION : Number(value);
   }
 
   hide({ animate = true }: TransitionOptions = {}) {
     this.#isHidden = true;
+    this.#fadeDuration = this.parseFadeDuration(animate);
 
     if (!isCSSHoudiniSupported || this.#forceFallback) {
-      this.el.style.setProperty("background", "var(--fallback)");
+      this.showFallback();
       return;
     }
 
-    this.#fadeDuration = this.parseFadeDuration(animate);
     this.#tstop = null; // reset the stop point
     this.t = 0; // reset the clock
 
@@ -222,15 +232,14 @@ class SpoilerPainter {
 
   reveal({ animate = true }: TransitionOptions = {}) {
     this.#isHidden = false;
+    const duration = this.parseFadeDuration(animate);
+    this.#fadeDuration = duration;
 
     if (!isCSSHoudiniSupported || this.#forceFallback) {
-      this.el.style.removeProperty("background");
+      this.hideFallback();
       return;
     }
 
-    const duration = this.parseFadeDuration(animate);
-
-    this.#fadeDuration = duration;
     this.#tstop = this.t;
 
     if (duration <= 0) {
@@ -283,6 +292,11 @@ class SpoilerPainter {
 
     this.t += dt / 1000; // in seconds
     this.#t0 = now;
+
+    if (!isCSSHoudiniSupported || this.#forceFallback) {
+      this.#fallback.syncGeometry();
+      this.#fallback.drawFrame();
+    }
   };
 
   /** Animation state */
@@ -290,6 +304,10 @@ class SpoilerPainter {
   #raf: ReturnType<typeof requestAnimationFrame> | null = null;
 
   startAnimation() {
+    if (!isCSSHoudiniSupported || this.#forceFallback) {
+      this.#fallback.updateSurface(this.#lastGap);
+    }
+
     this.#t0 = performance.now();
     this.#frame(this.#t0);
   }
@@ -328,11 +346,23 @@ class SpoilerPainter {
 
     this.#observer.observe(this.el);
   }
+
+  showFallback() {
+    this.#fallback.show(this.#fadeDuration);
+    this.#tstop = null;
+    this.t = 0;
+    this.startAnimation();
+  }
+
+  hideFallback() {
+    this.stopAnimation();
+    this.#fallback.hide(this.#fadeDuration);
+  }
 }
 
 declare global {
   namespace CSS {
-    module paintWorklet {
+    namespace paintWorklet {
       function addModule(moduleURL: string): Promise<void>;
     }
   }
