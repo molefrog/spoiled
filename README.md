@@ -135,6 +135,9 @@ You can also use `fps` and `density` props to control the performance:
 When applied to inline elements, `<Spoiler />` will try to mimic the shape of the words in a
 paragraph (faking spaces between words).
 
+This is currently available only on the Houdini path. Fallback browsers render animated line boxes
+without word-gap mimicry.
+
 Since it can be inaccurate, use `mimicWords` setting to disable it:
 
 ```jsx

@@ -35,13 +35,12 @@ type FallbackCanvas = {
 };
 
 const GAP_RATIO = 8.0;
+const HIGH_Z_INDEX = "2147483647";
 
 export type SpoilerPainterFallbackOptions = {
   readonly defaultDensity: number;
   readonly defaultGap: number | boolean;
 };
-
-type SurfaceResult = boolean;
 
 export class SpoilerPainterFallback {
   readonly el: HTMLElement;
@@ -56,17 +55,19 @@ export class SpoilerPainterFallback {
   // Keep the fallback canvases sharp by sizing their backing bitmaps to the current DPR.
   #dpr = 1;
   #inlinePosition = "";
-  #inlineOverflow = "";
   #inlinePositioning = false;
   #viewportListeners = false;
   #lastGap: number | boolean;
+  #refreshRAF: ReturnType<typeof requestAnimationFrame> | null = null;
+  #refreshNeedsDraw = false;
+  #refreshNeedsSurface = false;
 
   readonly #handleScroll = () => {
     this.syncGeometry();
   };
 
   readonly #handleResize = () => {
-    this.updateSurface(this.#lastGap);
+    this.scheduleRefresh({ draw: true, surface: true });
   };
 
   constructor(el: HTMLElement, options: SpoilerPainterFallbackOptions) {
@@ -77,11 +78,20 @@ export class SpoilerPainterFallback {
   }
 
   destroy() {
+    if (this.#mode === "none") return;
+
     this.attachViewportListeners(false);
+
+    if (this.#refreshRAF !== null) {
+      cancelAnimationFrame(this.#refreshRAF);
+      this.#refreshRAF = null;
+    }
 
     this.#canvases.forEach(({ canvas }) => canvas.remove());
     this.#canvases = [];
     this.#layout = null;
+    this.#refreshNeedsDraw = false;
+    this.#refreshNeedsSurface = false;
 
     if (this.#root) {
       this.#root.remove();
@@ -93,11 +103,10 @@ export class SpoilerPainterFallback {
       this.#inlinePositioning = false;
     }
 
-    this.el.style.overflow = this.#inlineOverflow;
     this.#mode = "none";
   }
 
-  updateSurface(gap: number | boolean | undefined): SurfaceResult {
+  updateSurface(gap: number | boolean | undefined, draw = true): boolean {
     if (typeof document === "undefined") return false;
 
     const mode = getComputedStyle(this.el).getPropertyValue("display") === "inline" ? "inline" : "block";
@@ -106,28 +115,28 @@ export class SpoilerPainterFallback {
     }
 
     this.#lastGap = gap ?? this.#defaultGap;
-    this.#dpr = Math.max(1, Math.round(globalThis.devicePixelRatio || 1));
+    this.#dpr = Math.max(1, globalThis.devicePixelRatio || 1);
 
-    if (!this.syncGeometry()) {
-      return false;
-    }
-
+    this.syncGeometry();
     this.el.style.setProperty("--gap", this.getGap(mode, this.#lastGap));
     this.attachViewportListeners(mode === "inline");
-    this.drawFrame();
+    if (draw) {
+      this.drawFrame();
+    }
 
     return true;
   }
 
-  show(duration: number) {
-    if (!this.updateSurface(this.#lastGap) || !this.#root) {
+  show(duration: number, draw = true) {
+    if (!this.updateSurface(this.#lastGap, draw) || !this.#root) {
       this.el.style.setProperty("background", "var(--fallback)");
-      return;
+      return false;
     }
 
     this.el.style.removeProperty("background");
     this.#root.style.transitionDuration = `${duration}s`;
     this.#root.style.opacity = "1";
+    return true;
   }
 
   hide(duration: number) {
@@ -140,11 +149,9 @@ export class SpoilerPainterFallback {
   }
 
   syncGeometry() {
-    if (!this.#root || this.#mode === "none") return false;
+    if (!this.#root || this.#mode === "none") return;
 
     const layout = this.getLayout(this.#mode);
-    if (!layout) return false;
-
     this.#layout = layout;
 
     if (this.#mode === "inline") {
@@ -155,7 +162,6 @@ export class SpoilerPainterFallback {
     }
 
     this.syncCanvases(layout.fragments);
-    return true;
   }
 
   drawFrame() {
@@ -165,23 +171,13 @@ export class SpoilerPainterFallback {
 
       if (width <= 0 || height <= 0) return;
 
-      ctx.clearRect(0, 0, width, height);
       this.#painter.paint(ctx, { width, height }, this.getPropertyMap());
     });
   }
 
   getDensity() {
     const rawDensity = parseFloat(this.el.style.getPropertyValue("--density"));
-    const density = Number.isFinite(rawDensity) ? rawDensity : this.#defaultDensity;
-    const accent = this.el.style.getPropertyValue("--accent") || "";
-    const parts = accent.trim().split(/\s+/);
-    const lightness = parseFloat(parts[2] || "");
-
-    if (Number.isFinite(lightness) && lightness > 50) {
-      return density * 1.7;
-    }
-
-    return density;
+    return Number.isFinite(rawDensity) ? rawDensity : this.#defaultDensity;
   }
 
   ensureSurface(mode: Exclude<FallbackMode, "none">) {
@@ -206,19 +202,16 @@ export class SpoilerPainterFallback {
         this.#inlinePositioning = true;
       }
 
-      this.#inlineOverflow = this.el.style.overflow;
-      this.el.style.overflow = "hidden";
-
       root.style.position = "absolute";
       root.style.inset = "0";
-      root.style.zIndex = "0";
+      root.style.zIndex = HIGH_Z_INDEX;
       this.el.prepend(root);
     } else {
-      root.style.position = "absolute";
+      root.style.position = "fixed";
       root.style.left = "0";
       root.style.top = "0";
-      root.style.zIndex = "2147483647";
-      document.body.appendChild(root);
+      root.style.zIndex = HIGH_Z_INDEX;
+      this.getInlineRootParent().appendChild(root);
     }
 
     this.#mode = mode;
@@ -226,6 +219,16 @@ export class SpoilerPainterFallback {
     this.#canvases = [];
 
     return true;
+  }
+
+  getInlineRootParent() {
+    const rootNode = this.el.getRootNode();
+
+    if (rootNode instanceof ShadowRoot) {
+      return rootNode;
+    }
+
+    return this.el.ownerDocument.body ?? this.el.ownerDocument.documentElement;
   }
 
   attachViewportListeners(enabled: boolean) {
@@ -243,7 +246,34 @@ export class SpoilerPainterFallback {
     globalThis.removeEventListener("resize", this.#handleResize);
   }
 
-  getLayout(mode: Exclude<FallbackMode, "none">): FallbackLayout | null {
+  scheduleRefresh(options: { draw: boolean; surface?: boolean }) {
+    this.#refreshNeedsDraw = this.#refreshNeedsDraw || options.draw;
+    this.#refreshNeedsSurface = this.#refreshNeedsSurface || Boolean(options.surface);
+
+    if (this.#refreshRAF !== null) return;
+
+    this.#refreshRAF = requestAnimationFrame(() => {
+      this.#refreshRAF = null;
+
+      const needsSurface = this.#refreshNeedsSurface;
+      const needsDraw = this.#refreshNeedsDraw;
+
+      this.#refreshNeedsSurface = false;
+      this.#refreshNeedsDraw = false;
+
+      if (needsSurface) {
+        this.updateSurface(this.#lastGap);
+        return;
+      }
+
+      this.syncGeometry();
+      if (needsDraw) {
+        this.drawFrame();
+      }
+    });
+  }
+
+  getLayout(mode: Exclude<FallbackMode, "none">): FallbackLayout {
     const bounds = this.el.getBoundingClientRect();
     const width = Math.max(1, Math.ceil(bounds.width));
     const height = Math.max(1, Math.ceil(bounds.height));
@@ -258,34 +288,24 @@ export class SpoilerPainterFallback {
       };
     }
 
-    const left = Math.round(bounds.left + globalThis.scrollX);
-    const top = Math.round(bounds.top + globalThis.scrollY);
+    const left = Math.round(bounds.left);
+    const top = Math.round(bounds.top);
 
     const fragments = [...this.el.getClientRects()]
       .map((rect) => ({
-        x: Math.round(rect.left + globalThis.scrollX - left),
-        y: Math.round(rect.top + globalThis.scrollY - top),
+        x: Math.round(rect.left - left),
+        y: Math.round(rect.top - top),
         width: Math.ceil(rect.width),
         height: Math.ceil(rect.height),
       }))
       .filter((rect) => rect.width > 0 && rect.height > 0);
-
-    if (fragments.length === 0) {
-      return {
-        left,
-        top,
-        width,
-        height,
-        fragments: [{ x: 0, y: 0, width, height }],
-      };
-    }
 
     return {
       left,
       top,
       width,
       height,
-      fragments,
+      fragments: fragments.length > 0 ? fragments : [{ x: 0, y: 0, width, height }],
     };
   }
 
@@ -313,8 +333,8 @@ export class SpoilerPainterFallback {
 
     fragments.forEach((fragment, index) => {
       const { canvas } = this.#canvases[index];
-      const pixelWidth = Math.max(1, fragment.width * this.#dpr);
-      const pixelHeight = Math.max(1, fragment.height * this.#dpr);
+      const pixelWidth = Math.max(1, Math.ceil(fragment.width * this.#dpr));
+      const pixelHeight = Math.max(1, Math.ceil(fragment.height * this.#dpr));
 
       canvas.style.left = `${fragment.x}px`;
       canvas.style.top = `${fragment.y}px`;

@@ -12,6 +12,7 @@ export interface SpoilerPainterOptions {
   readonly fps?: number;
   readonly gap?: number | boolean;
   readonly density?: number;
+  // `mimicWords` affects only the Houdini path. Fallback browsers render line boxes without word gaps.
   readonly mimicWords?: boolean;
   readonly accentColor?: string;
   readonly fallback?: string | false;
@@ -294,7 +295,6 @@ class SpoilerPainter {
     this.#t0 = now;
 
     if (!isCSSHoudiniSupported || this.#forceFallback) {
-      this.#fallback.syncGeometry();
       this.#fallback.drawFrame();
     }
   };
@@ -304,10 +304,6 @@ class SpoilerPainter {
   #raf: ReturnType<typeof requestAnimationFrame> | null = null;
 
   startAnimation() {
-    if (!isCSSHoudiniSupported || this.#forceFallback) {
-      this.#fallback.updateSurface(this.#lastGap);
-    }
-
     this.#t0 = performance.now();
     this.#frame(this.#t0);
   }
@@ -334,6 +330,9 @@ class SpoilerPainter {
           if (!entry.isIntersecting) {
             this.stopAnimation();
           } else {
+            if (!isCSSHoudiniSupported || this.#forceFallback) {
+              this.#fallback.updateSurface(this.#lastGap);
+            }
             this.startAnimation();
           }
         });
@@ -348,9 +347,11 @@ class SpoilerPainter {
   }
 
   showFallback() {
-    this.#fallback.show(this.#fadeDuration);
+    const shouldDrawImmediately = this.maxFPS <= 0;
+    if (!this.#fallback.show(this.#fadeDuration, shouldDrawImmediately)) return;
     this.#tstop = null;
     this.t = 0;
+    if (shouldDrawImmediately) return;
     this.startAnimation();
   }
 
@@ -362,7 +363,7 @@ class SpoilerPainter {
 
 declare global {
   namespace CSS {
-    namespace paintWorklet {
+    module paintWorklet {
       function addModule(moduleURL: string): Promise<void>;
     }
   }
