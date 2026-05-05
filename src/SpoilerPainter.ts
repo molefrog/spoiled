@@ -363,7 +363,7 @@ class SpoilerPainter {
 
 declare global {
   namespace CSS {
-    module paintWorklet {
+    namespace paintWorklet {
       function addModule(moduleURL: string): Promise<void>;
     }
   }
