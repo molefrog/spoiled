@@ -38,6 +38,7 @@ const buildLibraryConfig: UserConfig = {
     lib: {
       entry: ["src/index.ts", "src/index_unstyled.ts"],
       formats: ["es"],
+      cssFileName: "style",
     },
     rollupOptions: {
       external: ["react"],

@@ -1,7 +1,7 @@
 {
   "name": "spoiled",
   "description": "Realistic animated <Spoiler /> component for React",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "type": "module",
   "license": "Unlicense",
   "main": "esm/index.js",
