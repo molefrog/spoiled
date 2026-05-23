@@ -30,6 +30,8 @@
   "files": [
     "esm",
     "src",
+    "!src/**/node_modules",
+    "!src/**/*.test.*",
     "README.md"
   ],
   "scripts": {
